@@ -169,4 +169,9 @@ export class ExamReviewPage implements OnInit {
   getOptionLetter(index: number): string {
     return String.fromCharCode(65 + index); // A, B, C, D...
   }
+
+  isAnswerEmpty(category: string, sectionId: number, qId: string): boolean {
+    const ans = this.getAnswer(category, sectionId, qId);
+    return ans === undefined || ans === null || ans === '' || (Array.isArray(ans) && ans.length === 0);
+  }
 }

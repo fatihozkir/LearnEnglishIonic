@@ -65,9 +65,13 @@
                 @for (q of sec.questions; track q.id) {
                   <div class="review-q-card">
                     
-                    <!-- Correct / Incorrect Badge -->
+                    <!-- Outcome Badges -->
                     <div class="q-card-header">
-                      @if (isAnswerCorrect(activeCategory(), sec.id, q)) {
+                      @if (isAnswerEmpty(activeCategory(), sec.id, q.id)) {
+                        <ion-badge color="warning" class="outcome-badge">
+                          <ion-icon name="help-circle-outline" class="outcome-icon"></ion-icon> UNANSWERED
+                        </ion-badge>
+                      } @else if (isAnswerCorrect(activeCategory(), sec.id, q)) {
                         <ion-badge color="success" class="outcome-badge">
                           <ion-icon name="checkmark-circle-outline" class="outcome-icon"></ion-icon> CORRECT
                         </ion-badge>
@@ -104,6 +108,29 @@
                             </div>
                           </div>
                         }
+                      </div>
+                    }
+
+                    <!-- Text Input Answer Review Block (Fill in the blank / Short answer) -->
+                    @if (q.type === 'fill_in_blank' || q.type === 'short_answer') {
+                      <div class="text-answer-review">
+                        <div class="answer-row">
+                          <span class="lbl">Your Answer:</span>
+                          @if (isAnswerEmpty(activeCategory(), sec.id, q.id)) {
+                            <ion-badge color="medium" class="user-val-badge empty-val">(No response entered)</ion-badge>
+                          } @else {
+                            <ion-badge [color]="isAnswerCorrect(activeCategory(), sec.id, q) ? 'success' : 'danger'" class="user-val-badge">
+                              {{ getAnswer(activeCategory(), sec.id, q.id) }}
+                            </ion-badge>
+                          }
+                        </div>
+                        
+                        <div class="answer-row">
+                          <span class="lbl">Correct Answer:</span>
+                          <ion-badge color="primary" class="correct-val-badge">
+                            {{ q.answer }}
+                          </ion-badge>
+                        </div>
                       </div>
                     }
 
