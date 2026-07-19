@@ -196,6 +196,12 @@ body.dark-theme {
   ion-modal {
     --background: #1E1B2E !important;
   }
+
+  ion-checkbox, ion-radio {
+    --color: var(--ion-text-color, #FDF2F8) !important;
+    --color-checked: var(--ion-color-primary, #6366f1) !important;
+    color: var(--ion-text-color, #FDF2F8) !important;
+  }
 }
 
 /* Premium Custom Modal Dialog styling */
