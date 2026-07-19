@@ -56,7 +56,7 @@
               <!-- Reading passage text review -->
               @if (sec.passage) {
                 <div class="passage-box">
-                  <p>{{ sec.passage }}</p>
+                  <div [innerHTML]="sec.passage"></div>
                 </div>
               }
 

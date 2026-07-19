@@ -53,7 +53,7 @@
             @if (sec.passage) {
               <div class="reading-passage-panel">
                 <h3>Reading Text Passage</h3>
-                <p class="passage-text">{{ sec.passage }}</p>
+                <div class="passage-text" [innerHTML]="sec.passage"></div>
               </div>
             }
 
