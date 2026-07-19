@@ -51,7 +51,8 @@
       <div 
         class="floating-tooltip"
         [style.left.px]="viewModel.tooltipX()"
-        [style.top.px]="viewModel.tooltipY()">
+        [style.top.px]="viewModel.tooltipY()"
+        (mousedown)="$event.preventDefault(); $event.stopPropagation()">
         <ion-button size="small" color="dark" class="tooltip-btn" (mousedown)="addSelectedToGlossary($event)">
           <ion-icon slot="start" name="add-outline"></ion-icon>
           Add to Glossary
