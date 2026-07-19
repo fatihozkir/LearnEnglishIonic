@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, OnDestroy, OnInit, ChangeDetection
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {
   IonHeader,
   IonToolbar,
@@ -42,6 +43,9 @@ import {
   trophyOutline,
   refreshOutline,
   closeOutline,
+  lockClosedOutline,
+  playOutline,
+  volumeHighOutline,
 } from 'ionicons/icons';
 import { ExamCategory, ExamAnswers } from '../../core/models/models';
 
@@ -78,12 +82,15 @@ import { ExamCategory, ExamAnswers } from '../../core/models/models';
 export class ExamSessionPage implements OnInit, OnDestroy {
   public stateService = inject(ExamStateService);
   private router = inject(Router);
+  private sanitizer = inject(DomSanitizer);
 
   // States
   activeCategory = signal<ExamCategory>(ExamCategory.LISTENING);
   expandedSections = signal<string[]>([]);
   showExitModal = signal<boolean>(false);
   showSubmitModal = signal<boolean>(false);
+  playingSectionId = signal<number | null>(null);
+  safeVideoUrl = signal<SafeResourceUrl | null>(null);
 
   // Voice record simulator
   isRecording = signal<boolean>(false);
@@ -112,6 +119,9 @@ export class ExamSessionPage implements OnInit, OnDestroy {
       trophyOutline,
       refreshOutline,
       closeOutline,
+      lockClosedOutline,
+      playOutline,
+      volumeHighOutline,
     });
   }
 
@@ -132,6 +142,12 @@ export class ExamSessionPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopVoiceSimulator();
+  }
+
+  ionViewWillLeave() {
+    this.showExitModal.set(false);
+    this.showSubmitModal.set(false);
+    this.finishPlayback();
   }
 
   getSectionIds(): string[] {
@@ -244,5 +260,23 @@ export class ExamSessionPage implements OnInit, OnDestroy {
   onReviewAnswers() {
     // Hide results overlay card and trigger interactive review highlights!
     this.stateService.showResultsScreen.set(false);
+  }
+
+  // --- Listening Audio Player Helpers ---
+  isSectionPlayed(sectionId: number): boolean {
+    return !!this.stateService.playedSections()[sectionId];
+  }
+
+  startPlayback(sectionId: number, videoId: string) {
+    if (this.isSectionPlayed(sectionId) || this.stateService.submitted()) return;
+    this.stateService.markSectionPlayed(sectionId);
+    this.playingSectionId.set(sectionId);
+    const url = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    this.safeVideoUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+  }
+
+  finishPlayback() {
+    this.playingSectionId.set(null);
+    this.safeVideoUrl.set(null);
   }
 }

@@ -57,8 +57,76 @@
               </div>
             }
 
+            <!-- Listening Audio Player Panel -->
+            @if (activeCategory() === 'listening' && sec.videoId) {
+              <div class="listening-player-panel">
+                <div class="exam-rule-card">
+                  <div class="rule-icon">⚠️</div>
+                  <div class="rule-text">
+                    <strong>Listening Section Rule:</strong> This recording can be played <strong>only once</strong>. 
+                    You cannot pause, replay, or skip. Please prepare your notes before pressing Play.
+                  </div>
+                </div>
+
+                <div class="audio-viewport">
+                  @if ((isSectionPlayed(sec.id) || stateService.submitted()) && playingSectionId() !== sec.id) {
+                    <div class="viewport-overlay locked-overlay">
+                      <ion-icon name="lock-closed-outline" class="big-icon"></ion-icon>
+                      @if (stateService.submitted()) {
+                        <h3>Exam Completed</h3>
+                        <p>The exam is finished. Audio playback is disabled.</p>
+                      } @else {
+                        <h3>Recording Locked</h3>
+                        <p>You have already listened to this audio clip. You cannot replay it.</p>
+                      }
+                    </div>
+                  }
+
+                  @if (!isSectionPlayed(sec.id) && playingSectionId() !== sec.id && !stateService.submitted()) {
+                    <div class="viewport-overlay play-overlay" (click)="startPlayback(sec.id, sec.videoId)">
+                      <img class="thumbnail-bg" [src]="'https://img.youtube.com/vi/' + sec.videoId + '/hqdefault.jpg'" alt="audio thumbnail">
+                      <div class="overlay-shader"></div>
+                      <div class="play-btn-circle">
+                        <ion-icon name="play-outline"></ion-icon>
+                      </div>
+                      <span class="tap-hint">Tap to Start Listening</span>
+                    </div>
+                  }
+
+                  @if (playingSectionId() === sec.id) {
+                    <div class="viewport-overlay playing-overlay">
+                      <ion-icon name="volume-high-outline" class="pulse-icon"></ion-icon>
+                      <h3>Audio is Playing...</h3>
+                      <p>Please listen carefully. The video is visually hidden for this exam.</p>
+
+                      @if (safeVideoUrl()) {
+                        <iframe 
+                          width="1" 
+                          height="1" 
+                          [src]="safeVideoUrl()" 
+                          frameborder="0" 
+                          allow="accelerometer; autoplay; encrypted-media; gyroscope;" 
+                          style="position: absolute; opacity: 0; pointer-events: none;">
+                        </iframe>
+                      }
+                    </div>
+                  }
+                </div>
+
+                @if (playingSectionId() === sec.id) {
+                  <div class="action-bar-player">
+                    <ion-button expand="block" color="dark" class="player-action-btn" (click)="finishPlayback()">
+                      <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                      I have finished listening
+                    </ion-button>
+                  </div>
+                }
+              </div>
+            }
+
             <!-- Questions Loop -->
-            <div class="questions-list-wrapper">
+            @if (activeCategory() !== 'listening' || isSectionPlayed(sec.id) || stateService.submitted()) {
+              <div class="questions-list-wrapper">
               @for (q of sec.questions; track q.id) {
                 
                 <!-- Standard MC / TF / Matching questions -->
@@ -181,6 +249,7 @@
 
               }
             </div>
+            }
 
           </div>
         </ion-accordion>

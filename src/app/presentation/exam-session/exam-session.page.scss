@@ -623,3 +623,204 @@
     box-shadow: none;
   }
 }
+
+/* Listening Audio Player Panel */
+.listening-player-panel {
+  max-width: 800px;
+  margin: 0 auto 24px auto;
+  padding: 0;
+
+  .exam-rule-card {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: rgba(217, 119, 6, 0.05);
+    border: 1px solid rgba(217, 119, 6, 0.2);
+    border-left: 4px solid var(--ion-color-warning, #d97706);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    .rule-icon {
+      font-size: 1.2rem;
+    }
+    .rule-text {
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--ion-color-step-800, #334155);
+    }
+  }
+
+  .audio-viewport {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: #0f172a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    border: 1px solid var(--ion-color-step-200, #334155);
+  }
+
+  .viewport-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff;
+    padding: 20px;
+    z-index: 2;
+  }
+
+  .play-overlay {
+    cursor: pointer;
+
+    .thumbnail-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.4) blur(1px);
+      z-index: -2;
+      transition: transform 0.4s ease;
+    }
+
+    .overlay-shader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.6) 100%);
+      z-index: -1;
+    }
+
+    .play-btn-circle {
+      width: 64px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      margin-bottom: 12px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+      ion-icon {
+        font-size: 2rem;
+        color: #0f172a;
+        margin-left: 4px;
+      }
+    }
+
+    .tap-hint {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.8);
+      transition: color 0.3s ease;
+    }
+
+    &:hover {
+      .thumbnail-bg {
+        transform: scale(1.02);
+      }
+      .play-btn-circle {
+        transform: scale(1.06);
+        background: #ffffff;
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+      }
+      .tap-hint {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .locked-overlay {
+    background: var(--ion-color-step-900, #1e293b);
+    border: 2px solid var(--ion-color-step-300, #334155);
+
+    .big-icon {
+      font-size: 3rem;
+      color: var(--ion-color-step-500, #64748b);
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      color: var(--ion-color-step-100, #f8fafc);
+    }
+
+    p {
+      font-size: 0.88rem;
+      color: var(--ion-color-step-400, #94a3b8);
+      margin: 0;
+      max-width: 320px;
+      line-height: 1.4;
+    }
+  }
+
+  .playing-overlay {
+    background: #090d16;
+
+    .pulse-icon {
+      font-size: 3rem;
+      color: var(--ion-color-primary, #4f46e5);
+      margin-bottom: 12px;
+      animation: speakerPulse 1.2s infinite alternate ease-in-out;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+      letter-spacing: 0.05em;
+    }
+
+    p {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      margin: 0;
+      max-width: 320px;
+      line-height: 1.4;
+    }
+  }
+
+  .action-bar-player {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+
+    .player-action-btn {
+      width: 100%;
+      --border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin: 0;
+    }
+  }
+}
+
+@keyframes speakerPulse {
+  0% {
+    transform: scale(0.92);
+    filter: drop-shadow(0 0 0px rgba(79, 70, 229, 0));
+  }
+  100% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.5));
+  }
+}
