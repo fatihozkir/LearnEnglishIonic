@@ -205,9 +205,24 @@
 
       <!-- Scores Widget -->
       <div class="stats-circle-container">
-        <div class="progress-circle-widget">
-          <span class="val">{{ stateService.sessionStats().percentage }}%</span>
-          <span class="lbl">{{ stateService.sessionStats().correct }} / {{ stateService.sessionStats().total }} correct</span>
+        <div class="circular-score-wrapper">
+          <svg viewBox="0 0 36 36" class="circular-chart-score">
+            <path class="circle-bg"
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+            <path class="circle-progress"
+              [attr.stroke-dasharray]="stateService.sessionStats().percentage + ', 100'"
+              d="M18 2.0845
+                a 15.9155 15.9155 0 0 1 0 31.831
+                a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+          </svg>
+          <div class="circular-inner-val">
+            <span class="val">{{ stateService.sessionStats().percentage }}%</span>
+            <span class="lbl">{{ stateService.sessionStats().correct }} / {{ stateService.sessionStats().total }} correct</span>
+          </div>
         </div>
       </div>
 
@@ -215,11 +230,17 @@
       <div class="results-stats-panel">
         <h3>Exam Performance Breakdown</h3>
         <div class="stat-breakdown-row">
-          <span class="stat-label">Total Time elapsed</span>
+          <div class="row-label-block">
+            <ion-icon name="time-outline" class="row-icon time-icon"></ion-icon>
+            <span class="stat-label">Total Time elapsed</span>
+          </div>
           <span class="stat-val">{{ formatTime(stateService.elapsedSeconds()) }}</span>
         </div>
         <div class="stat-breakdown-row">
-          <span class="stat-label">Difficulty tier</span>
+          <div class="row-label-block">
+            <ion-icon name="ribbon-outline" class="row-icon difficulty-icon"></ion-icon>
+            <span class="stat-label">Difficulty tier</span>
+          </div>
           <span class="stat-val font-uppercase">{{ stateService.activeConfig()?.difficulty }}</span>
         </div>
       </div>
