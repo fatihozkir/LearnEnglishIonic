@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, computed } from '@angular/core';
+import { Component, Input, OnInit, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -21,6 +21,7 @@ import { ExamStateService } from '../../services/exam-state.service';
 @Component({
   selector: 'app-question-card',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
@@ -130,7 +131,7 @@ export class QuestionCardComponent implements OnInit {
     return this.stateService.submitted();
   }
 
-  isCorrect(): boolean {
+  readonly isCorrectComputed = computed(() => {
     const ans = this.currentAnswer();
     const correct = this.question.answer;
 
@@ -150,6 +151,10 @@ export class QuestionCardComponent implements OnInit {
     }
 
     return ans === correct;
+  });
+
+  isCorrect(): boolean {
+    return this.isCorrectComputed();
   }
 
   // Utility to map choices index (0, 1, 2, 3) to letters (A, B, C, D)

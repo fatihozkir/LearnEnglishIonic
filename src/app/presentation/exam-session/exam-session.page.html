@@ -9,7 +9,7 @@
     @if (!stateService.submitted()) {
       <div class="session-timer-block">
         <ion-icon name="time-outline" class="timer-icon" [class.timer-alarm]="stateService.timeRemaining() < 300"></ion-icon>
-        <span class="timer-value">{{ formatTime(stateService.timeRemaining()) }}</span>
+        <span class="timer-value">{{ stateService.formattedTime() }}</span>
       </div>
     }
 

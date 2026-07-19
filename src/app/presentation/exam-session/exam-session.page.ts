@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -47,6 +47,7 @@ import { ExamCategory, ExamAnswers } from '../../core/models/models';
 @Component({
   selector: 'app-exam-session',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
