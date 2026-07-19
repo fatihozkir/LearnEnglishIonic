@@ -44,23 +44,25 @@
 
       <div class="selection-grid">
         @for (sec of sections(); track sec.id) {
-          <div 
-            class="config-pref-item" 
-            [class.selected]="sec.selected"
-            (click)="toggleSection(sec.id)">
-            <div class="neon-line" [class]="sec.colorClass"></div>
-            <div class="item-inner">
-              <div class="icon-circle" [class]="sec.colorClass">
-                <ion-icon [name]="sec.icon"></ion-icon>
-              </div>
-              <span class="label">{{ sec.name }}</span>
-              <div class="check-box-holder">
-                @if (sec.selected) {
-                  <ion-icon name="checkmark-circle-outline" class="green-check"></ion-icon>
-                }
+          @if (sec.id !== 'writing' && sec.id !== 'speaking') {
+            <div 
+              class="config-pref-item" 
+              [class.selected]="sec.selected"
+              (click)="toggleSection(sec.id)">
+              <div class="neon-line" [class]="sec.colorClass"></div>
+              <div class="item-inner">
+                <div class="icon-circle" [class]="sec.colorClass">
+                  <ion-icon [name]="sec.icon"></ion-icon>
+                </div>
+                <span class="label">{{ sec.name }}</span>
+                <div class="check-box-holder">
+                  @if (sec.selected) {
+                    <ion-icon name="checkmark-circle-outline" class="green-check"></ion-icon>
+                  }
+                </div>
               </div>
             </div>
-          </div>
+          }
         }
       </div>
     </div>
