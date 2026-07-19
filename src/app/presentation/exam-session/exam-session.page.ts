@@ -137,6 +137,7 @@ export class ExamSessionPage implements OnInit, OnDestroy {
   // --- Voice Recorder Simulator Action Helpers ---
 
   startVoiceSimulator(questionId: string) {
+    this.stopVoiceSimulator();
     this.activeRecordingId.set(questionId);
     this.isRecording.set(true);
     this.recordingSeconds.set(0);

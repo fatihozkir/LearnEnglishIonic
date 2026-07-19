@@ -2,6 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { LocalReadingRepository } from '../../data/repositories/local-reading.repository';
 import { ReadingSection } from '../../core/models/models';
 import { ExamStateService } from '../services/exam-state.service';
+import { first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,7 @@ export class ReadingViewModel {
   });
 
   init() {
-    this.repository.getAll().subscribe(data => {
+    this.repository.getAll().pipe(first()).subscribe(data => {
       this.sections.set(data);
       if (data.length > 0) {
         this.selectedSectionId.set(data[0].id);

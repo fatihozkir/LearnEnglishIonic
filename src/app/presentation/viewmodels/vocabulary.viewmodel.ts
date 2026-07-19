@@ -1,6 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { LocalVocabularyRepository } from '../../data/repositories/local-vocabulary.repository';
 import { VocabularySection } from '../../core/models/models';
+import { first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class VocabularyViewModel {
   });
 
   init() {
-    this.repository.getAll().subscribe(data => {
+    this.repository.getAll().pipe(first()).subscribe(data => {
       this.sections.set(data);
       if (data.length > 0) {
         this.selectedSectionId.set(data[0].id);

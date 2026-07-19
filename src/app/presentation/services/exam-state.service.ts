@@ -6,6 +6,7 @@ import { LocalReadingRepository } from '../../data/repositories/local-reading.re
 import { LocalVocabularyRepository } from '../../data/repositories/local-vocabulary.repository';
 import { LocalWritingRepository } from '../../data/repositories/local-writing.repository';
 import { LocalSpeakingRepository } from '../../data/repositories/local-speaking.repository';
+import { first } from 'rxjs';
 
 const STORAGE_KEY = 'english_exam_state';
 
@@ -344,7 +345,7 @@ export class ExamStateService {
     const processCategory = (cat: string, repo: any) => {
       if (!config.selectedSections.includes(cat)) return;
       
-      repo.getAll().subscribe((sections: any[]) => {
+      repo.getAll().pipe(first()).subscribe((sections: any[]) => {
         const clonedSections = JSON.parse(JSON.stringify(sections));
         clonedSections.forEach((sec: any) => {
           let qs: Question[] = sec.questions || [];

@@ -3,6 +3,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LocalListeningRepository } from '../../data/repositories/local-listening.repository';
 import { ListeningSection } from '../../core/models/models';
 import { ExamStateService } from '../services/exam-state.service';
+import { first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,7 @@ export class ListeningViewModel {
   });
 
   init() {
-    this.repository.getAll().subscribe(data => {
+    this.repository.getAll().pipe(first()).subscribe(data => {
       this.sections.set(data);
       if (data.length > 0) {
         this.selectedSectionId.set(data[0].id);
