@@ -172,8 +172,7 @@ export class ProfilePage {
       const user = this.authService.currentUser();
       if (user) {
         user.username = trimmed;
-        this.authService.currentUser.set({ ...user });
-        localStorage.setItem('english_exam_user_session', JSON.stringify(user));
+        this.authService.updateUser(user);
       }
       this.isEditingUsername.set(false);
     } else {
@@ -193,8 +192,7 @@ export class ProfilePage {
         .filter(c => c.selected)
         .map(c => c.id);
       
-      this.authService.currentUser.set({ ...user });
-      localStorage.setItem('english_exam_user_session', JSON.stringify(user));
+      this.authService.updateUser(user);
     }
   }
 
@@ -202,16 +200,14 @@ export class ProfilePage {
     const user = this.authService.currentUser();
     if (user) {
       user.nativeLanguage = lang;
-      this.authService.currentUser.set({ ...user });
-      localStorage.setItem('english_exam_user_session', JSON.stringify(user));
+      this.authService.updateUser(user);
     }
   }
 
   onLanguagePriorityChange() {
     const user = this.authService.currentUser();
     if (user) {
-      this.authService.currentUser.set({ ...user });
-      localStorage.setItem('english_exam_user_session', JSON.stringify(user));
+      this.authService.updateUser(user);
     }
   }
 

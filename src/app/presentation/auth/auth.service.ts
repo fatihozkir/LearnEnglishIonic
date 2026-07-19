@@ -2,6 +2,7 @@ import { Injectable, signal, computed, inject, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../core/models/models';
 import { ExamStateService } from '../services/exam-state.service';
+import { SecureStorage } from '../../core/utils/crypto-storage';
 
 const USER_SESSION_KEY = 'english_exam_user_session';
 
@@ -47,16 +48,26 @@ export class AuthService {
     localStorage.setItem('english_exam_theme_preference', mode);
   }
 
+  private getHashedSeed(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash).toString(16);
+  }
+
   login(email: string): boolean {
+    const username = email.split('@')[0] + '1234';
     const mockUser: User = {
-      username: email.split('@')[0] + '1234',
+      username,
       name: email.split('@')[0],
       surname: 'User',
       dob: '2000-01-01',
       email: email,
       nativeLanguage: 'tr',
       verified: true,
-      avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${email.split('@')[0]}`,
+      avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${this.getHashedSeed(username)}`,
       learningPreferences: ['listening', 'reading', 'grammar', 'writing', 'speaking', 'vocabulary'],
       questionCountsConfig: {
         listening: 10,
@@ -92,7 +103,7 @@ export class AuthService {
       email,
       nativeLanguage,
       verified: false, // Must be verified via deep link
-      avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`,
+      avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${this.getHashedSeed(username)}`,
       learningPreferences: ['listening', 'reading', 'grammar', 'writing', 'speaking', 'vocabulary'],
       questionCountsConfig: {
         listening: 10,
@@ -108,6 +119,11 @@ export class AuthService {
     return true;
   }
 
+  updateUser(user: User) {
+    this.currentUser.set({ ...user });
+    this.saveSession(user);
+  }
+
   logout() {
     this.currentUser.set(null);
     localStorage.removeItem(USER_SESSION_KEY);
@@ -117,7 +133,8 @@ export class AuthService {
 
   private saveSession(user: User) {
     this.currentUser.set(user);
-    localStorage.setItem(USER_SESSION_KEY, JSON.stringify(user));
+    const encrypted = SecureStorage.encrypt(user);
+    localStorage.setItem(USER_SESSION_KEY, encrypted);
     
     // Bind native language preference to state service locale
     this.stateService.userLanguage.set(user.nativeLanguage);
@@ -127,9 +144,13 @@ export class AuthService {
     const saved = localStorage.getItem(USER_SESSION_KEY);
     if (saved) {
       try {
-        const user: User = JSON.parse(saved);
-        this.currentUser.set(user);
-        this.stateService.userLanguage.set(user.nativeLanguage);
+        const user: User = SecureStorage.decrypt(saved);
+        if (user) {
+          this.currentUser.set(user);
+          this.stateService.userLanguage.set(user.nativeLanguage);
+        } else {
+          localStorage.removeItem(USER_SESSION_KEY);
+        }
       } catch (e) {
         localStorage.removeItem(USER_SESSION_KEY);
       }

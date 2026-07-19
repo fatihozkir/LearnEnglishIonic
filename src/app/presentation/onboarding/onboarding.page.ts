@@ -93,9 +93,7 @@ export class OnboardingPage {
         .map(p => p.id);
       
       user.learningPreferences = selectedIds;
-      
-      // Update session
-      localStorage.setItem('english_exam_user_session', JSON.stringify(user));
+      this.authService.updateUser(user);
     }
 
     // Step 2: Show Push Notification Permission Dialog
