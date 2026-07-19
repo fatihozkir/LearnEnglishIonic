@@ -17,6 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ExamStateService } from '../services/exam-state.service';
 import { addIcons } from 'ionicons';
+import { AuthService } from '../auth/auth.service';
 import {
   playOutline,
   headsetOutline,
@@ -61,6 +62,7 @@ interface SectionToggle {
 export class ExamsConfigPage {
   private stateService = inject(ExamStateService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   // States
   difficulty = signal<'easy' | 'medium' | 'hard'>('medium');
@@ -125,12 +127,13 @@ export class ExamsConfigPage {
     };
 
     // Override with user profile customized defaults if set
-    const user = JSON.parse(localStorage.getItem('english_exam_user_session') || '{}');
+    const user = this.authService.currentUser();
     if (user && user.questionCountsConfig) {
+      const config = user.questionCountsConfig;
       // Keep dynamic Reading difficulty scale unless overridden manually
-      Object.keys(user.questionCountsConfig).forEach(key => {
+      Object.keys(config).forEach(key => {
         if (key !== 'reading') {
-          counts[key] = user.questionCountsConfig[key];
+          counts[key] = config[key as keyof typeof config];
         }
       });
     }
