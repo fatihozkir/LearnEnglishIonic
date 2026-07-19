@@ -28,6 +28,7 @@ import {
   timeOutline,
   bookOutline,
   globeOutline,
+  helpCircleOutline,
 } from 'ionicons/icons';
 import { ExamHistoryItem, ExamCategory, Question } from '../../core/models/models';
 
@@ -75,6 +76,7 @@ export class ExamReviewPage implements OnInit {
       timeOutline,
       bookOutline,
       globeOutline,
+      helpCircleOutline,
     });
   }
 
