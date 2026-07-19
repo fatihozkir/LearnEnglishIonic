@@ -330,7 +330,7 @@
 }
 
 <!-- Custom Exit Confirmation Modal -->
-<ion-modal [isOpen]="showExitModal()" (didDismiss)="showExitModal.set(false)" class="custom-dialog-modal">
+<ion-modal [isOpen]="showExitModal()" (didDismiss)="onExitModalDismiss()" class="custom-dialog-modal">
   <ng-template>
     <div class="custom-confirm-card">
       <div class="icon-header warning-icon">

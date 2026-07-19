@@ -252,9 +252,19 @@ export class ExamSessionPage implements OnInit, OnDestroy {
     }
   }
 
+  private shouldNavigateOnDismiss = false;
+
   confirmExit() {
+    this.shouldNavigateOnDismiss = true;
     this.showExitModal.set(false);
-    this.router.navigate(['/tabs/home']);
+  }
+
+  onExitModalDismiss() {
+    this.showExitModal.set(false);
+    if (this.shouldNavigateOnDismiss) {
+      this.shouldNavigateOnDismiss = false;
+      this.router.navigate(['/tabs/home']);
+    }
   }
 
   onReviewAnswers() {
