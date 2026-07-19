@@ -151,7 +151,7 @@
   .metric-val {
     font-size: 1.25rem;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--ion-text-color, #0f172a);
   }
 
   .metric-lbl {
@@ -201,6 +201,11 @@
   --padding-end: 0;
   width: 40px;
   height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+  flex-shrink: 0;
   margin: 0;
   font-size: 1.2rem;
   
