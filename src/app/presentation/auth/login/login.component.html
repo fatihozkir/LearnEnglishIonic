@@ -1,0 +1,66 @@
+<ion-content color="dark" class="auth-viewport">
+  <div class="auth-wrapper">
+    <!-- Animated Glowing Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="auth-card">
+      <div class="logo-block">
+        <h1 class="app-title">ENGLISH<span>EXAM</span></h1>
+        <p class="subtitle">Mock Practice & Assessment Portal</p>
+      </div>
+
+      <form (submit)="onSubmit(); $event.preventDefault()" class="auth-form">
+        <h2>Welcome Back</h2>
+        <p class="form-lead">Enter your email and credentials to begin your practice sessions.</p>
+
+        <!-- Error Card -->
+        @if (errorMessage()) {
+          <div class="error-banner">
+            <span class="error-icon">⚠️</span>
+            <p>{{ errorMessage() }}</p>
+          </div>
+        }
+
+        <!-- Email Field -->
+        <div class="input-container">
+          <ion-item lines="none" class="glass-input-item">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              placeholder="Email Address" 
+              [(ngModel)]="email" 
+              name="email"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Password Field -->
+        <div class="input-container">
+          <ion-item lines="none" class="glass-input-item">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              placeholder="Password" 
+              [(ngModel)]="password" 
+              name="password"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Submit Button -->
+        <ion-button expand="block" type="submit" color="primary" class="auth-submit-btn">
+          Sign In
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+
+        <!-- Redirect Link -->
+        <div class="auth-redirect">
+          <p>Don't have an account? <a [routerLink]="['/register']">Create an Account</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

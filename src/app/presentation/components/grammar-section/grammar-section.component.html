@@ -1,0 +1,34 @@
+<!-- Section Segment Selector -->
+@if (viewModel.sections().length > 1) {
+  <ion-segment [value]="viewModel.selectedSectionId()" (ionChange)="onSectionChange($event)">
+    @for (sec of viewModel.sections(); track sec.id) {
+      <ion-segment-button [value]="sec.id">
+        <ion-label>{{ sec.title.split(' (')[0] }}</ion-label>
+      </ion-segment-button>
+    }
+  </ion-segment>
+}
+
+@if (viewModel.activeSection(); as section) {
+  <div class="section-container">
+    
+    <!-- Dynamic Reusable Header Component -->
+    <app-section-header 
+      [sectionId]="section.id" 
+      [title]="section.title"
+      instruction="Choose the grammatically correct answer, fill in the blanks, or match the items appropriately.">
+    </app-section-header>
+
+    <!-- Questions list -->
+    <div class="questions-list fade-in">
+      @for (q of section.questions; track q.id) {
+        <app-question-card 
+          [question]="q" 
+          [sectionId]="section.id" 
+          [category]="ExamCategory.GRAMMAR">
+        </app-question-card>
+      }
+    </div>
+
+  </div>
+}

@@ -1,0 +1,111 @@
+<!-- Section Segment Selector -->
+@if (viewModel.sections().length > 1) {
+  <ion-segment [value]="viewModel.selectedSectionId()" (ionChange)="onSectionChange($event)">
+    @for (sec of viewModel.sections(); track sec.id) {
+      <ion-segment-button [value]="sec.id">
+        <ion-label>Section {{ sec.id }}</ion-label>
+      </ion-segment-button>
+    }
+  </ion-segment>
+}
+
+@if (viewModel.activeSection(); as section) {
+  <div class="section-container">
+    
+    <!-- Dynamic Reusable Header Component -->
+    <app-section-header 
+      [sectionId]="section.id" 
+      [title]="section.title"
+      instruction="You should listen to the recording completely before answering the questions. You may take notes while listening.">
+    </app-section-header>
+
+    <!-- Exam Rules Alert Box -->
+    <div class="exam-rule-card">
+      <div class="rule-icon">⚠️</div>
+      <div class="rule-text">
+        <strong>Exam Rule:</strong> This recording can be played <strong>only once</strong>. 
+        You cannot pause, replay, or skip. Please prepare your notes before pressing Play.
+      </div>
+    </div>
+
+    <!-- Audio Player Viewport -->
+    <div class="audio-viewport">
+      
+      <!-- Locked Screen -->
+      @if ((viewModel.isPlayed() || stateService.submitted()) && !viewModel.isPlaying()) {
+        <div class="viewport-overlay locked-overlay">
+          <ion-icon name="lock-closed-outline" class="big-icon"></ion-icon>
+          @if (stateService.submitted()) {
+            <h3>Exam Completed</h3>
+            <p>The exam is finished. Audio playback is disabled.</p>
+          } @else {
+            <h3>Recording Locked</h3>
+            <p>You have already listened to this audio clip. You cannot replay it.</p>
+          }
+        </div>
+      }
+
+      <!-- Play Button Overlay -->
+      @if (!viewModel.isPlayed() && !viewModel.isPlaying() && !stateService.submitted()) {
+        <div class="viewport-overlay play-overlay" (click)="viewModel.startPlayback()">
+          <img class="thumbnail-bg" [src]="'https://img.youtube.com/vi/' + section.videoId + '/hqdefault.jpg'" alt="audio thumbnail">
+          <div class="overlay-shader"></div>
+          <div class="play-btn-circle">
+            <ion-icon name="play-outline"></ion-icon>
+          </div>
+          <span class="tap-hint">Tap to Start Listening</span>
+        </div>
+      }
+
+      <!-- Playing State UI -->
+      @if (viewModel.isPlaying()) {
+        <div class="viewport-overlay playing-overlay">
+          <ion-icon name="volume-high-outline" class="pulse-icon"></ion-icon>
+          <h3>Audio is Playing...</h3>
+          <p>Please listen carefully. The video is visually hidden for this exam.</p>
+
+          <!-- Hidden 1x1 Autoplay Iframe -->
+          @if (viewModel.safeVideoUrl()) {
+            <iframe 
+              width="1" 
+              height="1" 
+              [src]="viewModel.safeVideoUrl()" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; encrypted-media; gyroscope;" 
+              style="position: absolute; opacity: 0; pointer-events: none;">
+            </iframe>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Action Button for Play State -->
+    @if (viewModel.isPlaying()) {
+      <div class="action-bar">
+        <ion-button expand="block" color="dark" class="action-btn" (click)="viewModel.finishListening()">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          I have finished listening
+        </ion-button>
+      </div>
+    }
+
+    <!-- Scrollable Questions Container (Locked to played check) -->
+    @if (viewModel.showQuestions() || stateService.submitted()) {
+      <div class="questions-list fade-in">
+        <div class="questions-header">
+          <h3>Questions</h3>
+          <hr class="divider">
+        </div>
+
+        @for (q of section.questions; track q.id) {
+          <app-question-card 
+            [question]="q" 
+            [sectionId]="section.id" 
+            [category]="ExamCategory.LISTENING">
+          </app-question-card>
+        }
+      </div>
+    }
+
+  </div>
+}

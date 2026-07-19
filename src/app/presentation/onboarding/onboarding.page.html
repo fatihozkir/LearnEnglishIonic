@@ -1,0 +1,98 @@
+<ion-content color="dark" class="auth-viewport scroll-content">
+  <div class="auth-wrapper">
+    <!-- Animated Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Onboarding Step 1: Learning Preferences Selection -->
+    @if (!showPushPrompt() && !showEmailVerificationPrompt()) {
+      <div class="onboarding-card fade-in-panel">
+        <div class="header-block">
+          <span class="step-badge">Step 1 of 2</span>
+          <h2>Select Learning Preferences</h2>
+          <p>Choose the exam categories you want to focus on. You can edit this later in your Profile settings.</p>
+        </div>
+
+        <div class="preference-grid">
+          @for (card of preferences(); track card.id) {
+            <div 
+              class="pref-card" 
+              [class.selected]="card.selected"
+              [class.unselected]="!card.selected"
+              (click)="togglePreference(card.id)">
+              <div class="card-glow" [class]="card.colorClass"></div>
+              <div class="card-content-inner">
+                <div class="icon-circle" [class]="card.colorClass">
+                  <ion-icon [name]="card.icon"></ion-icon>
+                </div>
+                <div class="text-block">
+                  <h3>{{ card.name }}</h3>
+                  <p>{{ card.description }}</p>
+                </div>
+                <div class="checkbox-circle">
+                  @if (card.selected) {
+                    <ion-icon name="checkmark-circle-outline" class="check-icon"></ion-icon>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <ion-button expand="block" color="primary" class="onboarding-next-btn" (click)="onSavePreferences()">
+          Save and Continue
+        </ion-button>
+      </div>
+    }
+
+    <!-- Onboarding Step 2: Push Notifications Permission Prompt -->
+    @if (showPushPrompt()) {
+      <div class="onboarding-card prompt-card fade-in-panel">
+        <div class="prompt-icon-container">
+          <ion-icon name="notifications-outline" class="pulse-icon"></ion-icon>
+        </div>
+        
+        <h2>Enable Practice Reminders?</h2>
+        <p class="prompt-desc">
+          To achieve your learning targets, we recommend enabling daily notifications. 
+          We will send quick assessments, vocab flashcards, and countdown reminders.
+        </p>
+
+        <div class="prompt-actions">
+          <ion-button expand="block" color="primary" class="onboarding-next-btn" (click)="onPushPermissionResponse(true)">
+            Allow Notifications
+          </ion-button>
+          <ion-button expand="block" fill="clear" color="medium" class="skip-btn" (click)="onPushPermissionResponse(false)">
+            Maybe Later
+          </ion-button>
+        </div>
+      </div>
+    }
+
+    <!-- Onboarding Step 3: Account Verification & Deep Link Simulation -->
+    @if (showEmailVerificationPrompt()) {
+      <div class="onboarding-card prompt-card fade-in-panel">
+        <div class="prompt-icon-container verification-icon-container">
+          <ion-icon name="mail-open-outline" class="pulse-icon verification-pulse"></ion-icon>
+        </div>
+        
+        <h2>Verify Your Email</h2>
+        <p class="prompt-desc">
+          We have sent a verification email to your address. 
+          To complete registration and enable full access, click the confirmation link in the email.
+        </p>
+
+        <!-- Deep Linking Mock Simulator -->
+        <div class="deep-link-simulator">
+          <span class="simulator-label">📱 Deep-Link Verification Simulator</span>
+          <p>Tap the button below to simulate opening the confirmation link from your email client.</p>
+          
+          <ion-button expand="block" color="success" class="deep-link-trigger-btn" (click)="onSimulateDeepLink()">
+            <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+            Simulate Email Verification Link
+          </ion-button>
+        </div>
+      </div>
+    }
+  </div>
+</ion-content>

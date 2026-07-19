@@ -1,0 +1,141 @@
+<ion-card [class.correct-card]="isSubmitted() && isCorrect()" [class.incorrect-card]="isSubmitted() && !isCorrect()">
+  <ion-card-content>
+    <!-- Question Prompt -->
+    <div class="question-prompt">
+      <h3 [innerHTML]="question.prompt"></h3>
+    </div>
+
+    <!-- Question Answers Section -->
+    <div class="question-body" [class.disabled-input]="isSubmitted()">
+      
+      @switch (question.type) {
+        
+        <!-- Multiple Choice / True False -->
+        @case (QuestionType.MULTIPLE_CHOICE) {
+          <ion-radio-group [value]="currentAnswer()" (ionChange)="onRadioChange($event.detail.value)">
+            @for (option of question.options; track option; let i = $index) {
+              <ion-item lines="none" class="answer-item">
+                <ion-radio [value]="getOptionLetter(i)">
+                  <span class="option-letter">{{ getOptionLetter(i) }}.</span> {{ option }}
+                </ion-radio>
+              </ion-item>
+            }
+          </ion-radio-group>
+        }
+
+        @case (QuestionType.TRUE_FALSE) {
+          <ion-radio-group [value]="currentAnswer()" (ionChange)="onRadioChange($event.detail.value)">
+            @for (option of question.options; track option; let i = $index) {
+              <ion-item lines="none" class="answer-item">
+                <ion-radio [value]="getOptionLetter(i)">
+                  {{ option }}
+                </ion-radio>
+              </ion-item>
+            }
+          </ion-radio-group>
+        }
+
+        <!-- Multiple Select -->
+        @case (QuestionType.MULTIPLE_SELECT) {
+          <ion-list lines="none">
+            @for (option of question.options; track option; let i = $index) {
+              <ion-item class="answer-item">
+                <ion-checkbox [checked]="isOptionChecked(getOptionLetter(i))" (ionChange)="onCheckboxChange(getOptionLetter(i), $event)" [disabled]="isSubmitted()">
+                  <span class="option-letter">{{ getOptionLetter(i) }}.</span> {{ option }}
+                </ion-checkbox>
+              </ion-item>
+            }
+          </ion-list>
+        }
+
+        <!-- Fill In The Blank / Short Answer -->
+        @case (QuestionType.FILL_IN_BLANK) {
+          <ion-item fill="outline" class="input-item">
+            <ion-input 
+              placeholder="Type your answer here" 
+              [value]="currentAnswer()" 
+              (ionInput)="onInputText($event)"
+              [readonly]="isSubmitted()">
+            </ion-input>
+          </ion-item>
+        }
+
+        @case (QuestionType.SHORT_ANSWER) {
+          <ion-item fill="outline" class="input-item">
+            <ion-input 
+              placeholder="Type your answer here" 
+              [value]="currentAnswer()" 
+              (ionInput)="onInputText($event)"
+              [readonly]="isSubmitted()">
+            </ion-input>
+          </ion-item>
+        }
+
+        <!-- Matching -->
+        @case (QuestionType.MATCHING) {
+          <ion-list class="matching-list">
+            @for (option of question.options; track option) {
+              <div class="matching-pair-row">
+                <div class="matching-left">{{ getMatchingOption(option).left }}</div>
+                <div class="matching-divider">➔</div>
+                <div class="matching-right-selector">
+                  <ion-item lines="none" fill="outline" class="matching-select-item">
+                    <ion-select 
+                      placeholder="Match..." 
+                      [value]="matchingSelections[getMatchingOption(option).left]" 
+                      (ionChange)="onMatchingChange(getMatchingOption(option).left, $event)"
+                      [disabled]="isSubmitted()">
+                      @for (optRight of question.options; track optRight) {
+                        <ion-select-option [value]="getMatchingOption(optRight).right">
+                          {{ getMatchingOption(optRight).right }}
+                        </ion-select-option>
+                      }
+                    </ion-select>
+                  </ion-item>
+                </div>
+              </div>
+            }
+          </ion-list>
+        }
+      }
+    </div>
+
+    <!-- Explanation & Correct Answers (Submitted View Only) -->
+    @if (isSubmitted()) {
+      <div class="explanation-box" [class.correct-box]="isCorrect()" [class.incorrect-box]="!isCorrect()">
+        <div class="status-indicator">
+          @if (isCorrect()) {
+            <span class="correct-badge">✔ Correct</span>
+          } @else {
+            <span class="incorrect-badge">✘ Incorrect</span>
+            <div class="correct-answer-reveal">
+              <strong>Correct Answer: </strong>
+              @if (question.type === QuestionType.MATCHING) {
+                <ul class="matching-correct-list">
+                  @for (correctPair of question.answer; track correctPair) {
+                    <li>{{ correctPair.replace('-', ' ➔ ') }}</li>
+                  }
+                </ul>
+              } @else {
+                <span>{{ question.answer }}</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="explanations-content">
+          <div class="explanation-lang">
+            <strong>English Explanation:</strong>
+            <p>{{ question.explanation }}</p>
+          </div>
+          @if (question.localExplanations?.[stateService.userLanguage()]) {
+            <div class="explanation-lang local">
+              <strong>Native Explanation ({{ stateService.userLanguage().toUpperCase() }}):</strong>
+              <p>{{ question.localExplanations?.[stateService.userLanguage()] }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </ion-card-content>
+</ion-card>

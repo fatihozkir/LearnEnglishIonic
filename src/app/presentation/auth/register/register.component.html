@@ -1,0 +1,141 @@
+<ion-content color="dark" class="auth-viewport">
+  <div class="auth-wrapper">
+    <!-- Animated Glowing Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="auth-card">
+      <div class="logo-block">
+        <h1 class="app-title">ENGLISH<span>EXAM</span></h1>
+        <p class="subtitle">Mock Practice & Assessment Portal</p>
+      </div>
+
+      <form (submit)="onSubmit(); $event.preventDefault()" class="auth-form">
+        <h2>Create Account</h2>
+        <p class="form-lead">Register to start tracking your performance, glossary terms, and custom languages.</p>
+
+        <!-- Error Card -->
+        @if (errorMessage()) {
+          <div class="error-banner">
+            <span class="error-icon">⚠️</span>
+            <p>{{ errorMessage() }}</p>
+          </div>
+        }
+
+        <!-- Name & Surname Row -->
+        <div class="input-row">
+          <!-- Name Field -->
+          <div class="input-container half-width">
+            <ion-item lines="none" class="glass-input-item">
+              <ion-icon name="person-outline" class="input-icon"></ion-icon>
+              <ion-input 
+                type="text" 
+                placeholder="First Name" 
+                [(ngModel)]="name" 
+                name="name"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <!-- Surname Field -->
+          <div class="input-container half-width">
+            <ion-item lines="none" class="glass-input-item">
+              <ion-icon name="person-outline" class="input-icon"></ion-icon>
+              <ion-input 
+                type="text" 
+                placeholder="Last Name" 
+                [(ngModel)]="surname" 
+                name="surname"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+        </div>
+
+        <!-- Date of Birth Field -->
+        <div class="input-container">
+          <ion-item lines="none" class="glass-input-item">
+            <ion-icon name="calendar-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="date" 
+              placeholder="Date of Birth" 
+              [(ngModel)]="dob" 
+              name="dob"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Email Field -->
+        <div class="input-container">
+          <ion-item lines="none" class="glass-input-item">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="email" 
+              placeholder="Email Address" 
+              [(ngModel)]="email" 
+              name="email"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Password Field -->
+        <div class="input-container">
+          <ion-item lines="none" class="glass-input-item">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input 
+              type="password" 
+              placeholder="Password (6+ chars)" 
+              [(ngModel)]="password" 
+              name="password"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Native Language Selection -->
+        <div class="input-container">
+          <ion-item lines="none" class="glass-input-item">
+            <ion-icon name="globe-outline" class="input-icon"></ion-icon>
+            <ion-select 
+              [(ngModel)]="nativeLanguage" 
+              name="nativeLanguage" 
+              placeholder="Select Native Language" 
+              interface="popover"
+              class="glass-select">
+              <ion-select-option value="tr">Türkçe (Turkish)</ion-select-option>
+              <ion-select-option value="es">Español (Spanish)</ion-select-option>
+              <ion-select-option value="fr">Français (French)</ion-select-option>
+              <ion-select-option value="de">Deutsch (German)</ion-select-option>
+              <ion-select-option value="it">Italiano (Italian)</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+
+
+        <!-- Terms & Conditions checkbox -->
+        <div class="terms-container">
+          <ion-item lines="none" class="glass-checkbox-item terms-checkbox">
+            <ion-checkbox [(ngModel)]="acceptTerms" name="acceptTerms" required>
+              I accept the Terms & Conditions
+            </ion-checkbox>
+          </ion-item>
+        </div>
+
+        <!-- Submit Button -->
+        <ion-button expand="block" type="submit" color="primary" class="auth-submit-btn" [disabled]="!isFormValid()">
+          Get Started
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+
+        <!-- Redirect Link -->
+        <div class="auth-redirect">
+          <p>Already have an account? <a [routerLink]="['/login']">Sign In</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

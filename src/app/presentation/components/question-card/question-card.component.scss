@@ -1,0 +1,217 @@
+:host {
+  display: block;
+  margin-bottom: 16px;
+}
+
+ion-card {
+  margin: 0;
+  border-radius: 12px;
+  background: var(--ion-color-step-50, #ffffff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--ion-color-step-150, #e2e8f0);
+  transition: all 0.25s ease-in-out;
+}
+
+/* Correct & Incorrect Card States */
+ion-card.correct-card {
+  border: 1.5px solid var(--ion-color-success, #059669);
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.1);
+}
+
+ion-card.incorrect-card {
+  border: 1.5px solid var(--ion-color-danger, #e11d48);
+  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.1);
+}
+
+.question-prompt {
+  margin-bottom: 18px;
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.question-body {
+  margin-bottom: 8px;
+
+  &.disabled-input {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+}
+
+.answer-item {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 6px;
+  border-radius: 8px;
+
+  ion-radio, ion-checkbox {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    width: 100%;
+    font-size: 1rem;
+
+    &[disabled], &.radio-disabled, &.checkbox-disabled {
+      opacity: 0.95 !important;
+      --color: var(--ion-text-color) !important;
+      --color-checked: var(--ion-color-primary) !important;
+      --color-disabled: var(--ion-text-color) !important;
+    }
+  }
+  
+  .option-letter {
+    font-weight: 700;
+    margin-right: 4px;
+    color: var(--ion-color-step-600, #475569);
+  }
+}
+
+.input-item {
+  --background: var(--ion-color-step-100, #f8fafc);
+  --border-radius: 8px;
+  --padding-start: 12px;
+  margin-bottom: 12px;
+  
+  ion-input {
+    font-size: 1rem;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+  }
+}
+
+/* Matching Rows */
+.matching-list {
+  background: transparent;
+  padding: 0;
+}
+
+.matching-pair-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  background: var(--ion-color-step-100, #f8fafc);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--ion-color-step-200, #e2e8f0);
+}
+
+.matching-left {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ion-color-step-800, #1e293b);
+}
+
+.matching-divider {
+  padding: 0 10px;
+  color: var(--ion-color-step-400, #94a3b8);
+  font-size: 1rem;
+}
+
+.matching-right-selector {
+  flex: 1;
+  max-width: 240px;
+}
+
+.matching-select-item {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--ion-color-step-300, #cbd5e1);
+
+  ion-select {
+    width: 100%;
+    font-size: 0.9rem;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --padding-top: 6px;
+    --padding-bottom: 6px;
+  }
+}
+
+/* Review Explanation Container */
+.explanation-box {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+
+  &.correct-box {
+    background: rgba(5, 150, 105, 0.05);
+    border-left: 4px solid var(--ion-color-success, #059669);
+  }
+
+  &.incorrect-box {
+    background: rgba(225, 29, 72, 0.05);
+    border-left: 4px solid var(--ion-color-danger, #e11d48);
+  }
+}
+
+.correct-badge {
+  color: var(--ion-color-success-shade, #047857);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.incorrect-badge {
+  color: var(--ion-color-danger-shade, #be123c);
+  font-weight: 700;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.correct-answer-reveal {
+  margin-top: 6px;
+  color: var(--ion-color-step-800, #1e293b);
+  font-size: 0.95rem;
+
+  .matching-correct-list {
+    margin: 4px 0 0 16px;
+    padding: 0;
+    li {
+      margin-bottom: 2px;
+    }
+  }
+}
+
+.explanations-content {
+  margin-top: 14px;
+  border-top: 1px dashed var(--ion-color-step-300, #cbd5e1);
+  padding-top: 12px;
+}
+
+.explanation-lang {
+  margin-bottom: 12px;
+  
+  strong {
+    display: block;
+    color: var(--ion-color-step-700, #334155);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-step-900, #0f172a);
+  }
+
+  &.tr {
+    margin-bottom: 0;
+    p {
+      color: var(--ion-color-step-700, #334155);
+      font-style: italic;
+    }
+  }
+}

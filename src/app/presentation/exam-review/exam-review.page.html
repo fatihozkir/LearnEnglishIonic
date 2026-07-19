@@ -1,0 +1,152 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="review-toolbar">
+    <ion-button slot="start" fill="clear" class="back-btn" (click)="onGoBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title class="review-title">Review Session</ion-title>
+  </ion-toolbar>
+
+  <!-- History Categories tabs -->
+  @if (historyItem()) {
+    <ion-segment 
+      scrollable="true"
+      [value]="activeCategory()" 
+      (ionChange)="onSelectCategory($event.detail.value)"
+      class="review-segment">
+      @for (cat of historyItem()?.sections; track cat) {
+        <ion-segment-button [value]="cat" class="cat-seg-btn">
+          <ion-label>{{ cat | titlecase }}</ion-label>
+        </ion-segment-button>
+      }
+    </ion-segment>
+  }
+</ion-header>
+
+<ion-content class="review-viewport">
+  @if (historyItem()) {
+    <div class="review-container">
+      
+      <!-- Session Summary Header Widget -->
+      <div class="review-summary-hero fade-in-panel">
+        <div class="summary-meta">
+          <span class="date">{{ historyItem()?.date | date:'medium' }}</span>
+          <h2>Exam Score Breakdown</h2>
+          <div class="details-row">
+            <span class="meta-item">Difficulty: <strong>{{ historyItem()?.difficulty | uppercase }}</strong></span>
+            <span class="meta-item">•</span>
+            <span class="meta-item">Duration: <strong>{{ formatDuration(historyItem()!.durationSeconds) }}</strong></span>
+          </div>
+        </div>
+
+        <div class="score-badge-circle">
+          <span class="percentage">{{ historyItem()?.percentage }}%</span>
+          <span class="ratio">{{ historyItem()?.score }}/{{ historyItem()?.totalQuestions }}</span>
+        </div>
+      </div>
+
+      <!-- Loop Shuffled Sections -->
+      <ion-accordion-group [multiple]="true" [value]="expandedSections()" (ionChange)="onAccordionChange($event)">
+        @for (sec of historyItem()?.questions?.[activeCategory()]; track sec.id) {
+          <ion-accordion [value]="sec.id.toString()" class="exam-section-accordion">
+            <ion-item slot="header" class="exam-section-header">
+              <ion-label>Section {{ sec.id }}: {{ sec.title }}</ion-label>
+            </ion-item>
+            
+            <div class="section-review-block fade-in-panel" slot="content">
+              <!-- Reading passage text review -->
+              @if (sec.passage) {
+                <div class="passage-box">
+                  <p>{{ sec.passage }}</p>
+                </div>
+              }
+
+              <!-- Loop Questions took -->
+              <div class="questions-review-list">
+                @for (q of sec.questions; track q.id) {
+                  <div class="review-q-card">
+                    
+                    <!-- Correct / Incorrect Badge -->
+                    <div class="q-card-header">
+                      @if (isAnswerCorrect(activeCategory(), sec.id, q)) {
+                        <ion-badge color="success" class="outcome-badge">
+                          <ion-icon name="checkmark-circle-outline" class="outcome-icon"></ion-icon> CORRECT
+                        </ion-badge>
+                      } @else {
+                        <ion-badge color="danger" class="outcome-badge">
+                          <ion-icon name="close-circle-outline" class="outcome-icon"></ion-icon> INCORRECT
+                        </ion-badge>
+                      }
+                    </div>
+
+                    <p class="q-prompt-txt">{{ q.prompt }}</p>
+
+                    <!-- Options list (MCQ / TF) -->
+                    @if (q.options && q.options.length > 0 && activeCategory() !== 'writing' && activeCategory() !== 'speaking') {
+                      <div class="options-container">
+                        @for (opt of q.options; track opt) {
+                          <div 
+                            class="opt-item"
+                            [class.correct-option]="isOptionCorrect(q, opt)"
+                            [class.incorrect-selected]="isOptionSelected(activeCategory(), sec.id, q.id, opt) && !isOptionCorrect(q, opt)"
+                            [class.selected-indicator]="isOptionSelected(activeCategory(), sec.id, q.id, opt)">
+                            
+                            <div class="opt-label-block">
+                              <span class="indicator-marker">
+                                @if (isOptionCorrect(q, opt)) { ✓ }
+                                @else if (isOptionSelected(activeCategory(), sec.id, q.id, opt)) { ✗ }
+                              </span>
+                              <span class="text">{{ opt }}</span>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    }
+
+                    <!-- Writing Essay Output -->
+                    @if (activeCategory() === 'writing') {
+                      <div class="essay-review-block">
+                        <h5>Your Submitted Text</h5>
+                        <div class="submitted-essay-box">
+                          {{ getAnswer('writing', sec.id, q.id) || '(No response entered)' }}
+                        </div>
+                      </div>
+                    }
+
+                    <!-- Speaking Audio Output -->
+                    @if (activeCategory() === 'speaking') {
+                      <div class="speaking-review-block">
+                        <h5>Your Voice Recording</h5>
+                        <div class="submitted-speaking-box">
+                          <ion-icon name="checkmark-circle-outline" class="check"></ion-icon>
+                          <span>{{ getAnswer('speaking', sec.id, q.id) || '(No response entered)' }}</span>
+                        </div>
+                      </div>
+                    }
+
+                    <!-- Explanation Panel -->
+                    <div class="review-explanation-section">
+                      <div class="explanations-inner">
+                        <h5>Explanation Guidelines</h5>
+                        <p class="desc">{{ q.explanation }}</p>
+
+                        <!-- Bilingual Translations -->
+                        @if (stateService.userLanguage() === 'tr' && q.localExplanations?.['tr']) {
+                          <div class="local-tr-box">
+                            <span class="marker">TR</span>
+                            <p class="desc">{{ q.localExplanations['tr'] }}</p>
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                  </div>
+                }
+              </div>
+            </div>
+          </ion-accordion>
+        }
+      </ion-accordion-group>
+
+    </div>
+  }
+</ion-content>

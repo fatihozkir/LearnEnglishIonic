@@ -1,20 +1,335 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+<!-- 1. Glossary Manager Sliding Side Drawer (Left Side Menu) -->
+<ion-menu side="start" menuId="glossary-menu" contentId="main-content">
+  <ion-header class="ion-no-border">
+    <ion-toolbar color="dark" class="drawer-toolbar">
+      <ion-title>Glossary Manager</ion-title>
+      <ion-buttons slot="end">
+      <ion-menu-toggle menu="glossary-menu">
+        <ion-button>
+          Close
+        </ion-button>
+      </ion-menu-toggle>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
-</ion-content>
+  <ion-content color="light" class="drawer-content">
+    <div class="drawer-inner">
+      <p class="drawer-tip">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Select any word in the Reading passage to add it to your glossary here.
+      </p>
+
+      <!-- Sleek Manual Word Entry Card -->
+      <ion-card class="manual-glossary-card">
+        <ion-card-content class="manual-card-inner">
+          <h4 class="form-title">Add Word Manually</h4>
+          <div class="manual-entry-form">
+            <ion-item lines="none" class="manual-input-item">
+              <ion-input 
+                placeholder="Enter word (e.g. Eloquent)" 
+                [(ngModel)]="newWordText"
+                class="manual-input">
+              </ion-input>
+            </ion-item>
+            
+            <ion-item lines="none" class="manual-input-item">
+              <ion-textarea 
+                placeholder="Sentence Context (Optional)" 
+                [(ngModel)]="newWordContext"
+                [rows]="2"
+                class="manual-input">
+              </ion-textarea>
+            </ion-item>
+            
+            <ion-button 
+              expand="block" 
+              color="primary" 
+              class="add-manual-btn"
+              (click)="addManualWord()">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              Save Word
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      @if (stateService.glossary().length === 0) {
+        <div class="empty-glossary">
+          <ion-icon name="book-outline" class="empty-icon"></ion-icon>
+          <h3>Your glossary is empty</h3>
+          <p>Highlight vocabulary words in reading passages to save them here for study.</p>
+        </div>
+      } @else {
+        <ion-list lines="inset" class="glossary-list">
+          @for (item of stateService.glossary(); track item.word) {
+            <ion-item class="glossary-item-card">
+              <div class="word-block">
+                <h4>{{ item.word }}</h4>
+                @if (item.context) {
+                  <p class="word-context">"{{ item.context }}"</p>
+                }
+                <ion-note class="word-time">{{ item.timestamp | date:'shortTime' }}</ion-note>
+              </div>
+              <ion-button slot="end" fill="clear" color="danger" class="delete-btn" (click)="removeFromGlossary(item.word, $event)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    </div>
+  </ion-content>
+
+  <!-- Side Drawer User Profile & Logout Footer -->
+  <ion-footer class="drawer-footer ion-no-border">
+    <div class="user-profile-bar">
+      <div class="user-avatar-circle">
+        {{ authService.currentUser()?.name?.charAt(0)?.toUpperCase() }}
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ authService.currentUser()?.name }}</span>
+        <span class="user-email">{{ authService.currentUser()?.email }}</span>
+      </div>
+    </div>
+    <ion-button expand="block" color="danger" fill="outline" class="logout-action-btn" (click)="onLogoutClick()">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      Sign Out
+    </ion-button>
+  </ion-footer>
+</ion-menu>
+
+<!-- 2. Main Application Viewport -->
+<div class="ion-page" id="main-content">
+  
+  <!-- Header Bar -->
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="main-toolbar">
+      <!-- Title/Logo -->
+      <ion-title class="app-logo">
+        ENGLISH<span>EXAM</span>
+      </ion-title>
+
+      <!-- Control Buttons -->
+      <ion-buttons slot="end">
+        <!-- Floating Timer (hidden if submitted) -->
+        @if (!stateService.submitted()) {
+          <app-timer class="header-timer-widget"></app-timer>
+        }
+
+        <!-- Glossary Slide Toggle -->
+        <ion-menu-toggle menu="glossary-menu">
+          <ion-button color="dark" class="header-btn glossary-toggle">
+            <ion-icon slot="icon-only" name="book-outline"></ion-icon>
+            @if (stateService.glossaryCount() > 0) {
+              <ion-badge color="primary" class="glossary-badge">{{ stateService.glossaryCount() }}</ion-badge>
+            }
+          </ion-button>
+        </ion-menu-toggle>
+
+        <!-- Submit Exam Button -->
+        @if (!stateService.submitted()) {
+          <ion-button color="success" fill="solid" class="header-submit-btn" (click)="onSubmitClick()">
+            <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+            Finish Exam
+          </ion-button>
+        }
+
+        <!-- Reset Practice Button -->
+        @if (stateService.submitted()) {
+          <ion-button color="warning" fill="solid" class="header-submit-btn" (click)="onResetClick()">
+            <ion-icon slot="start" name="refresh-outline"></ion-icon>
+            Practice Again
+          </ion-button>
+        }
+
+        <!-- Show Results Button (when in review mode) -->
+        @if (stateService.submitted() && !stateService.showResultsScreen()) {
+          <ion-button color="primary" fill="solid" class="header-submit-btn" (click)="stateService.showResultsScreen.set(true)">
+            <ion-icon slot="start" name="trophy-outline"></ion-icon>
+            View Stats
+          </ion-button>
+        }
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content color="light" class="main-content-viewport">
+    
+    @if (!stateService.showResultsScreen()) {
+      <!-- Tab Navigation Segment (Listening, Grammar, Reading, Vocabulary) -->
+      <div class="navigation-tabs-container">
+        <ion-segment 
+          [value]="stateService.currentTab()" 
+          (ionChange)="onTabChange($event)"
+          class="main-navigation-segment">
+          <ion-segment-button value="listening">
+            <ion-label>Listening</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="grammar">
+            <ion-label>Grammar</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="reading">
+            <ion-label>Reading</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="vocabulary">
+            <ion-label>Vocabulary</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <!-- Active Component Viewport (Loaded via Signal-based switch) -->
+      <div class="active-component-wrapper">
+        @switch (stateService.currentTab()) {
+          @case (ExamCategory.LISTENING) {
+            <app-listening-section class="fade-in-tab"></app-listening-section>
+          }
+          @case (ExamCategory.GRAMMAR) {
+            <app-grammar-section class="fade-in-tab"></app-grammar-section>
+          }
+          @case (ExamCategory.READING) {
+            <app-reading-section class="fade-in-tab"></app-reading-section>
+          }
+          @case (ExamCategory.VOCABULARY) {
+            <app-vocabulary-section class="fade-in-tab"></app-vocabulary-section>
+          }
+        }
+      </div>
+
+      <!-- Review Alert Banner sticky at page bottom -->
+      @if (stateService.submitted()) {
+        <div class="review-mode-banner fade-in-panel">
+          <div class="banner-inner">
+            <span class="banner-icon">🔍</span>
+            <span class="banner-text">
+              <strong>Review Mode Active:</strong> Navigate through sections above to study mistakes, correct options, and bilingual grammar/vocabulary explanations.
+            </span>
+          </div>
+        </div>
+      }
+    } @else {
+      <!-- Dedicated Full-Screen Results Dashboard -->
+      <div class="results-screen-viewport fade-in-panel">
+        <div class="results-container">
+          
+          <!-- Overall Stats Card with Circle score SVG -->
+          <div class="overall-stats-card">
+            <div class="circular-score">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path class="circle"
+                  [attr.stroke-dasharray]="stateService.examStats().overall.score + ', 100'"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <text x="18" y="21.5" class="percentage">{{ stateService.examStats().overall.score }}%</text>
+              </svg>
+            </div>
+            
+            <div class="overall-info">
+              <h2>Exam Checked!</h2>
+              <p class="stats-summary">
+                Overall score: <strong>{{ stateService.examStats().overall.score }}%</strong>
+              </p>
+              <div class="stats-badge-row">
+                <span class="badge correct-badge">
+                  ✓ {{ stateService.examStats().overall.correct }} Correct
+                </span>
+                <span class="badge incorrect-badge">
+                  ✗ {{ stateService.examStats().overall.incorrect }} Incorrect
+                </span>
+                <span class="badge unanswered-badge">
+                  ⊘ {{ stateService.examStats().overall.unanswered }} Blank
+                </span>
+              </div>
+              <p class="time-spent-info">
+                Total Questions Graded: {{ stateService.examStats().overall.total }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Section Breakdowns -->
+          <h3 class="breakdown-title">Section Performance Breakdown</h3>
+          <div class="section-stats-grid">
+            
+            <!-- Listening Section Stats -->
+            <div class="section-stat-card">
+              <div class="card-header-bar listening-header">Listening</div>
+              <div class="card-body">
+                <div class="score-row">
+                  <span class="score-percent">{{ stateService.examStats().listening.score }}%</span>
+                  <span class="score-fraction">{{ stateService.examStats().listening.correct }}/{{ stateService.examStats().listening.total }} Qs</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar listening-progress" [style.width.%]="stateService.examStats().listening.score"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grammar Section Stats -->
+            <div class="section-stat-card">
+              <div class="card-header-bar grammar-header">Grammar</div>
+              <div class="card-body">
+                <div class="score-row">
+                  <span class="score-percent">{{ stateService.examStats().grammar.score }}%</span>
+                  <span class="score-fraction">{{ stateService.examStats().grammar.correct }}/{{ stateService.examStats().grammar.total }} Qs</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar grammar-progress" [style.width.%]="stateService.examStats().grammar.score"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reading Section Stats -->
+            <div class="section-stat-card">
+              <div class="card-header-bar reading-header">Reading</div>
+              <div class="card-body">
+                <div class="score-row">
+                  <span class="score-percent">{{ stateService.examStats().reading.score }}%</span>
+                  <span class="score-fraction">{{ stateService.examStats().reading.correct }}/{{ stateService.examStats().reading.total }} Qs</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar reading-progress" [style.width.%]="stateService.examStats().reading.score"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vocabulary Section Stats -->
+            <div class="section-stat-card">
+              <div class="card-header-bar vocabulary-header">Vocabulary</div>
+              <div class="card-body">
+                <div class="score-row">
+                  <span class="score-percent">{{ stateService.examStats().vocabulary.score }}%</span>
+                  <span class="score-fraction">{{ stateService.examStats().vocabulary.correct }}/{{ stateService.examStats().vocabulary.total }} Qs</span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress-bar vocabulary-progress" [style.width.%]="stateService.examStats().vocabulary.score"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons-row">
+            <ion-button color="success" fill="solid" (click)="stateService.showResultsScreen.set(false)" class="action-btn">
+              <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+              Review Answers & Mistakes
+            </ion-button>
+            <ion-button color="warning" fill="solid" (click)="onResetClick()" class="action-btn">
+              <ion-icon slot="start" name="refresh-outline"></ion-icon>
+              Retake Exam
+            </ion-button>
+          </div>
+
+        </div>
+      </div>
+    }
+
+  </ion-content>
+</div>

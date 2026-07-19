@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+ion-segment {
+  margin-bottom: 20px;
+  background: var(--ion-color-step-100, #f1f5f9);
+  border-radius: 8px;
+}
+
+.section-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 8px;
+}
+
+.section-header {
+  margin-bottom: 22px;
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ion-color-step-900, #0f172a);
+    margin: 0 0 6px 0;
+  }
+  .instruction-text {
+    font-size: 0.95rem;
+    color: var(--ion-color-step-600, #475569);
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.questions-list {
+  margin-top: 10px;
+}
+
+/* Fade-in Animation */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,235 @@
+.history-toolbar {
+  --background: var(--ion-color-step-50, #0f172a);
+  --border-width: 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.app-logo-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ion-color-step-900, #f8fafc);
+  
+  span {
+    color: var(--ion-color-primary, #6366f1);
+    background: rgba(99, 102, 241, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 2px;
+  }
+}
+
+.history-viewport {
+  --background: var(--ion-background-color, #f8fafc);
+}
+
+.history-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px 40px 16px;
+}
+
+/* Empty History Card */
+.empty-history-card {
+  background: var(--ion-color-step-50, #ffffff);
+  border: 1px solid var(--ion-color-step-200, #cbd5e1);
+  border-radius: 20px;
+  padding: 48px 24px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-width: 460px;
+  margin: 40px auto 0 auto;
+
+  .empty-icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: #6366f1;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ion-text-color, #0f172a);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--ion-color-step-500, #64748b);
+    margin: 0 0 10px 0;
+  }
+
+  .launch-exam-btn {
+    --border-radius: 10px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin: 0;
+    text-transform: none;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+}
+
+/* Session History Cards */
+.session-history-list {
+  background: transparent;
+  padding: 0;
+}
+
+.history-item-card {
+  --background: var(--ion-color-step-50, #ffffff);
+  --border-radius: 16px;
+  border: 1px solid var(--ion-color-step-200, #cbd5e1);
+  border-radius: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px;
+  }
+}
+
+.card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ion-color-step-500, #64748b);
+
+  .item-meta-icon {
+    font-size: 0.95rem;
+  }
+}
+
+.mix-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.category-pill-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  --background: var(--ion-color-step-100, #f1f5f9);
+  --color: var(--ion-text-color, #334155);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.duration-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--ion-color-step-400, #94a3b8);
+
+  .item-meta-icon {
+    font-size: 0.9rem;
+  }
+
+  .difficulty-divider {
+    color: #cbd5e1;
+  }
+
+  .diff-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    --padding-start: 6px;
+    --padding-end: 6px;
+    --padding-top: 3px;
+    --padding-bottom: 3px;
+  }
+}
+
+/* Score Circle Right Panel */
+.card-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.score-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 3px solid #10b981;
+  background: rgba(16, 185, 129, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .score-num {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #10b981;
+    line-height: 1.1;
+  }
+
+  .score-ratio {
+    font-size: 0.65rem;
+    color: #64748b;
+  }
+}
+
+.details-arrow-btn {
+  --padding-start: 0;
+  --padding-end: 0;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+/* Animations */
+.fade-in-panel {
+  animation: panelFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes panelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

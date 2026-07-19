@@ -1,2 +1,104 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+/**
+ * English Practice Exam Theme Variables
+ * Core Palette: Indigo & Coral
+ */
+
+:root {
+  /* 1. Brand & Accent Colors */
+  --ion-color-primary: #4F46E5;
+  --ion-color-primary-rgb: 79, 70, 229;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #463cca;
+  --ion-color-primary-tint: #6259e8;
+
+  --ion-color-secondary: #FF7A59;
+  --ion-color-secondary-rgb: 255, 122, 89;
+  --ion-color-secondary-contrast: #1E1B2E;
+  --ion-color-secondary-contrast-rgb: 30, 27, 46;
+  --ion-color-secondary-shade: #e06b4e;
+  --ion-color-secondary-tint: #ff8b6c;
+
+  --ion-color-success: #10B981;
+  --ion-color-success-rgb: 16, 185, 129;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #0ea372;
+  --ion-color-success-tint: #28c08e;
+
+  --ion-color-danger: #EF4444;
+  --ion-color-danger-rgb: 239, 68, 68;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #d23c3c;
+  --ion-color-danger-tint: #f15757;
+
+  --ion-color-warning: #FFC93C;
+  --ion-color-warning-rgb: 255, 201, 60;
+  --ion-color-warning-contrast: #1E1B2E;
+  --ion-color-warning-contrast-rgb: 30, 27, 46;
+  --ion-color-warning-shade: #e0b135;
+  --ion-color-warning-tint: #ffce50;
+
+  --ion-color-dark: #1E1B2E;
+  --ion-color-dark-rgb: 30, 27, 46;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #1a1828;
+  --ion-color-dark-tint: #343143;
+
+  --ion-color-light: #FDF2F8;
+  --ion-color-light-rgb: 253, 242, 248;
+  --ion-color-light-contrast: #1E1B2E;
+  --ion-color-light-contrast-rgb: 30, 27, 46;
+  --ion-color-light-shade: #dfd5da;
+  --ion-color-light-tint: #fdf3f9;
+
+  /* 2. Light Theme Layout Backgrounds & Texts */
+  --ion-background-color: #FDF2F8; /* Soft warm light background */
+  --ion-background-color-rgb: 253, 242, 248;
+  --ion-text-color: #1E1B2E;       /* Dark/Text color */
+  --ion-text-color-rgb: 30, 27, 46;
+
+  /* Light Theme step variables (Borders and cards are clean gray/white) */
+  --ion-color-step-50: #ffffff;    /* Elevated Card backgrounds */
+  --ion-color-step-100: #f8fafc;
+  --ion-color-step-150: #f1f5f9;
+  --ion-color-step-200: #e2e8f0;   /* Borders line */
+  --ion-color-step-300: #cbd5e1;
+  --ion-color-step-400: #94a3b8;
+  --ion-color-step-500: #64748b;   /* Secondary metadata description text */
+  --ion-color-step-600: #475569;
+  --ion-color-step-700: #334155;
+  --ion-color-step-800: #1e293b;
+  --ion-color-step-900: #0f172a;
+}
+
+/* 3. Dark Theme Preferences ( Obsidian Dark #1E1B2E ) */
+body.dark-theme {
+  --ion-background-color: #1E1B2E; /* Obsidian Dark Background */
+  --ion-background-color-rgb: 30, 27, 46;
+  --ion-text-color: #FDF2F8;       /* Soft Light text */
+  --ion-text-color-rgb: 253, 242, 248;
+
+  /* Brand adjustments under Dark mode */
+  --ion-color-primary: #a8c7fa;
+  --ion-color-primary-rgb: 168, 199, 250;
+  --ion-color-primary-contrast: #1E1B2E;
+  --ion-color-primary-contrast-rgb: 30, 27, 46;
+  --ion-color-primary-shade: #7fa6f2;
+  --ion-color-primary-tint: #c2e7ff;
+
+  /* Dark Theme step variables */
+  --ion-color-step-50: #25233c;    /* Elevated card background */
+  --ion-color-step-100: #2d2a4a;
+  --ion-color-step-150: #363257;
+  --ion-color-step-200: #433e6b;   /* Borders in dark mode */
+  --ion-color-step-300: #58518a;
+  --ion-color-step-400: #7b72ba;
+  --ion-color-step-500: #a296df;   /* Secondary meta texts */
+  --ion-color-step-600: #c2baee;
+  --ion-color-step-700: #dad5f7;
+  --ion-color-step-800: #ebe8fb;
+  --ion-color-step-900: #ffffff;
+}

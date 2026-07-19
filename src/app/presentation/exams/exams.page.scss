@@ -1,0 +1,226 @@
+.exams-toolbar {
+  --background: var(--ion-color-step-50, #0f172a);
+  --border-width: 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.app-logo-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--ion-color-step-900, #f8fafc);
+  
+  span {
+    color: var(--ion-color-success, #10b981);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 2px;
+  }
+}
+
+.exams-viewport {
+  --background: var(--ion-background-color, #f8fafc);
+}
+
+.configurator-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px 40px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Config Cards */
+.config-card {
+  background: var(--ion-color-step-50, #ffffff);
+  border: 1px solid var(--ion-color-step-200, #cbd5e1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.config-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.header-icon {
+  font-size: 2.2rem;
+  color: var(--ion-color-step-500, #64748b);
+  flex-shrink: 0;
+
+  &.neon-purple {
+    color: #8b5cf6;
+  }
+}
+
+.header-txt {
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--ion-text-color, #0f172a);
+    margin: 0 0 4px 0;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: var(--ion-color-step-500, #64748b);
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+/* Difficulty Segment styling */
+.difficulty-segment {
+  --background: var(--ion-color-step-100, #f1f5f9);
+  border-radius: 10px;
+  padding: 4px;
+  
+  ion-segment-button {
+    --color: var(--ion-color-step-500, #64748b);
+    --color-checked: var(--ion-text-color, #0f172a);
+    --background-checked: var(--ion-color-step-50, #ffffff);
+    --border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    box-shadow: none;
+    margin: 0 2px;
+
+    &.segment-button-checked {
+      color: var(--ion-text-color, #0f172a) !important;
+    }
+  }
+}
+
+/* Sections Selection Grid */
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.config-pref-item {
+  position: relative;
+  background: var(--ion-color-step-100, #f8fafc);
+  border: 1px solid var(--ion-color-step-200, #e2e8f0);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &.selected {
+    border-color: var(--ion-color-primary, #6366f1);
+    background: rgba(var(--ion-color-primary-rgb, 99, 102, 241), 0.05);
+    box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.08);
+  }
+}
+
+.neon-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+
+  &.listening-card { background: #6366f1; }
+  &.grammar-card { background: #06b6d4; }
+  &.reading-card { background: #8b5cf6; }
+  &.vocabulary-card { background: #ec4899; }
+  &.writing-card { background: #f97316; }
+  &.speaking-card { background: #14b8a6; }
+}
+
+.item-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.1rem;
+
+  &.listening-card { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+  &.grammar-card { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
+  &.reading-card { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+  &.vocabulary-card { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+  &.writing-card { background: rgba(249, 115, 22, 0.2); color: #fb923c; }
+  &.speaking-card { background: rgba(20, 184, 166, 0.2); color: #2dd4bf; }
+}
+
+.label {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--ion-text-color, #1e293b);
+  flex-grow: 1;
+}
+
+.check-box-holder {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.green-check {
+  font-size: 1.25rem;
+  color: #10b981;
+}
+
+/* Action block */
+.action-card {
+  text-align: center;
+}
+
+.start-exam-btn {
+  --border-radius: 12px;
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  font-weight: 700;
+  font-size: 0.98rem;
+  margin: 0;
+  text-transform: none;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+}
+
+.start-disclaimer {
+  font-size: 0.78rem;
+  color: var(--ion-color-step-500, #64748b);
+  margin: 8px 0 0 0;
+}
+
+/* Animations */
+.fade-in-panel {
+  animation: panelFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes panelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

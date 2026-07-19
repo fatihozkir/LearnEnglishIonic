@@ -1,0 +1,286 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="profile-toolbar">
+    <ion-title class="app-logo-title">
+      Profile<span>Settings</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="profile-viewport">
+  <div class="profile-container">
+    
+    <!-- User Settings Banner Card -->
+    <div class="profile-card hero-profile-settings fade-in-panel">
+      <div class="hero-top">
+        <img [src]="authService.currentUser()?.avatarUrl" alt="user avatar" class="avatar-large">
+        <div class="meta">
+          <div class="name-badge-row">
+            <h2>{{ authService.currentUser()?.name }} {{ authService.currentUser()?.surname }}</h2>
+            @if (authService.currentUser()?.verified) {
+              <ion-icon name="checkmark-circle" class="verified-icon" title="Verified Account"></ion-icon>
+            }
+          </div>
+          
+          <!-- Username Edit Block -->
+          <div class="username-edit-row">
+            @if (isEditingUsername()) {
+              <div class="edit-input-wrapper">
+                <span class="at-symbol">&#64;</span>
+                <input 
+                  type="text" 
+                  [(ngModel)]="editedUsername" 
+                  (keyup.enter)="toggleEditUsername()"
+                  class="username-input-field">
+              </div>
+              <ion-button fill="clear" color="success" class="edit-action-btn" (click)="toggleEditUsername()">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </ion-button>
+            } @else {
+              <span class="username-label">&#64;{{ authService.currentUser()?.username }}</span>
+              <ion-button fill="clear" color="primary" class="edit-action-btn" (click)="toggleEditUsername()">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </ion-button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Subscription Tier Card -->
+    <div class="profile-card subscription-settings fade-in-panel">
+      <div class="card-header-meta">
+        <ion-icon name="card-outline" class="card-title-icon"></ion-icon>
+        <div class="header-titles">
+          <h3>Subscription Tier</h3>
+          <p>Configure plans and purchase mock memberships.</p>
+        </div>
+      </div>
+      
+      <div class="plan-status-row">
+        <div class="plan-info">
+          <span class="plan-label">Current Membership</span>
+          <h4 class="plan-name">{{ activePlan() }}</h4>
+        </div>
+        <ion-button color="primary" fill="solid" class="upgrade-action-btn" (click)="onUpgradePlan()">
+          Manage Plans
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Application Theme Settings -->
+    <div class="profile-card theme-settings fade-in-panel">
+      <div class="card-header-meta">
+        <ion-icon name="color-palette-outline" class="card-title-icon"></ion-icon>
+        <div class="header-titles">
+          <h3>Application Theme</h3>
+          <p>Choose between Light Mode and Obsidian Dark Mode.</p>
+        </div>
+      </div>
+      
+      <div class="theme-controls">
+        <ion-segment 
+          [value]="authService.themeMode()" 
+          (ionChange)="onThemeChange($event.detail.value)"
+          class="theme-segment">
+          <ion-segment-button value="light">
+            <ion-label>Light Mode</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="dark">
+            <ion-label>Dark Mode</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+    </div>
+
+    <!-- Native Language Options -->
+    <div class="profile-card language-settings fade-in-panel">
+      <div class="card-header-meta">
+        <ion-icon name="globe-outline" class="card-title-icon"></ion-icon>
+        <div class="header-titles">
+          <h3>Native Language Preferences</h3>
+          <p>Select your language to localize explanations.</p>
+        </div>
+      </div>
+
+      <div class="lang-controls">
+        <ion-item lines="none" class="glass-select-wrapper">
+          <ion-select 
+            [value]="authService.currentUser()?.nativeLanguage" 
+            (ionChange)="onLanguageChange($event.detail.value)"
+            interface="popover"
+            class="lang-select-box">
+            <ion-select-option value="tr">Türkçe (Turkish)</ion-select-option>
+            <ion-select-option value="es">Español (Spanish)</ion-select-option>
+            <ion-select-option value="fr">Français (French)</ion-select-option>
+            <ion-select-option value="de">Deutsch (German)</ion-select-option>
+            <ion-select-option value="it">Italiano (Italian)</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <div class="language-priority">
+          <ion-item lines="none" class="priority-checkbox-item">
+            <ion-checkbox 
+              [(ngModel)]="authService.currentUser()!.isLanguagePrimary" 
+              (ionChange)="onLanguagePriorityChange()">
+              Primary Learning Language
+            </ion-checkbox>
+          </ion-item>
+          <ion-item lines="none" class="priority-checkbox-item">
+            <ion-checkbox 
+              [(ngModel)]="authService.currentUser()!.isLanguageSecondary" 
+              (ionChange)="onLanguagePriorityChange()">
+              Secondary Learning Language
+            </ion-checkbox>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learning Preferences Section -->
+    <div class="profile-card preferences-settings fade-in-panel">
+      <div class="card-header-meta">
+        <ion-icon name="sparkles-outline" class="card-title-icon neon-purple"></ion-icon>
+        <div class="header-titles">
+          <h3>Learning Preferences</h3>
+          <p>Toggle cards below to select categories visible during configs.</p>
+        </div>
+      </div>
+
+      <div class="preferences-toggles-grid">
+        @for (card of learningCards(); track card.id) {
+          <div 
+            class="pref-toggle-badge" 
+            [class.active]="card.selected"
+            (click)="toggleCard(card.id)">
+            <ion-icon [name]="card.icon" class="badge-icon"></ion-icon>
+            <span class="badge-label">{{ card.name }}</span>
+            <ion-icon name="checkmark-outline" class="check-indicator" *ngIf="card.selected"></ion-icon>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Exam Configs Validations Settings -->
+    <div class="profile-card exams-limits-settings fade-in-panel">
+      <div class="card-header-meta">
+        <ion-icon name="options-outline" class="card-title-icon"></ion-icon>
+        <div class="header-titles">
+          <h3>Default Question Counts</h3>
+          <p>Customize the default question limits per exam type (1 to 50 allowed).</p>
+        </div>
+      </div>
+
+      <div class="limits-inputs-grid">
+        
+        <!-- Listening Counts -->
+        <div class="limit-input-item">
+          <label>Listening Qs</label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="listeningCount" 
+            (ionInput)="validateCount('listening', listeningCount)"
+            class="limit-field"
+            [class.invalid-field]="validationErrors()['listening']">
+          </ion-input>
+          @if (validationErrors()['listening']) {
+            <span class="validation-msg">{{ validationErrors()['listening'] }}</span>
+          }
+        </div>
+
+        <!-- Grammar Counts -->
+        <div class="limit-input-item">
+          <label>Grammar Qs</label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="grammarCount" 
+            (ionInput)="validateCount('grammar', grammarCount)"
+            class="limit-field"
+            [class.invalid-field]="validationErrors()['grammar']">
+          </ion-input>
+          @if (validationErrors()['grammar']) {
+            <span class="validation-msg">{{ validationErrors()['grammar'] }}</span>
+          }
+        </div>
+
+        <!-- Reading Counts -->
+        <div class="limit-input-item">
+          <label>Reading Qs</label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="readingCount" 
+            (ionInput)="validateCount('reading', readingCount)"
+            class="limit-field"
+            [class.invalid-field]="validationErrors()['reading']">
+          </ion-input>
+          @if (validationErrors()['reading']) {
+            <span class="validation-msg">{{ validationErrors()['reading'] }}</span>
+          }
+        </div>
+
+        <!-- Vocabulary Counts -->
+        <div class="limit-input-item">
+          <label>Vocabulary Qs</label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="vocabularyCount" 
+            (ionInput)="validateCount('vocabulary', vocabularyCount)"
+            class="limit-field"
+            [class.invalid-field]="validationErrors()['vocabulary']">
+          </ion-input>
+          @if (validationErrors()['vocabulary']) {
+            <span class="validation-msg">{{ validationErrors()['vocabulary'] }}</span>
+          }
+        </div>
+
+        <!-- Writing Counts -->
+        <div class="limit-input-item">
+          <label>Writing prompts</label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="writingCount" 
+            (ionInput)="validateCount('writing', writingCount)"
+            class="limit-field"
+            [class.invalid-field]="validationErrors()['writing']">
+          </ion-input>
+          @if (validationErrors()['writing']) {
+            <span class="validation-msg">{{ validationErrors()['writing'] }}</span>
+          }
+        </div>
+
+        <!-- Speaking Counts -->
+        <div class="limit-input-item">
+          <label>Speaking tasks</label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="speakingCount" 
+            (ionInput)="validateCount('speaking', speakingCount)"
+            class="limit-field"
+            [class.invalid-field]="validationErrors()['speaking']">
+          </ion-input>
+          @if (validationErrors()['speaking']) {
+            <span class="validation-msg">{{ validationErrors()['speaking'] }}</span>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Alert / Push System Controls -->
+    <div class="profile-card push-system-settings fade-in-panel">
+      <div class="card-header-meta">
+        <ion-icon name="notifications-outline" class="card-title-icon"></ion-icon>
+        <div class="header-titles">
+          <h3>Push Notifications</h3>
+          <p>Update assessment alerts and study reminders setup.</p>
+        </div>
+      </div>
+      
+      <div class="push-actions">
+        <ion-button expand="block" fill="outline" color="primary" class="configure-push-btn" (click)="onRePromptPushNotifications()">
+          Reconfigure Reminders Permissions
+        </ion-button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

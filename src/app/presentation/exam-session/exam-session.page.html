@@ -1,0 +1,240 @@
+<!-- Full-screen Active Exam Session Layout -->
+<ion-header class="ion-no-border">
+  <ion-toolbar class="session-toolbar">
+    <ion-button slot="start" fill="clear" class="exit-btn" (click)="onCloseExam()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+
+    <!-- Timer Countdown Title -->
+    @if (!stateService.submitted()) {
+      <div class="session-timer-block">
+        <ion-icon name="time-outline" class="timer-icon" [class.timer-alarm]="stateService.timeRemaining() < 300"></ion-icon>
+        <span class="timer-value">{{ formatTime(stateService.timeRemaining()) }}</span>
+      </div>
+    }
+
+    <!-- Submit Trigger -->
+    @if (!stateService.submitted()) {
+      <ion-button slot="end" color="success" size="small" class="submit-action-btn" (click)="onSubmit()">
+        Finish Exam
+      </ion-button>
+    } @else {
+      <ion-badge slot="end" color="secondary" class="submitted-badge">REVIEW MODE</ion-badge>
+    }
+  </ion-toolbar>
+
+  <!-- Categories Tabs Segment (Mixed practice sections) -->
+  <ion-segment 
+    scrollable="true"
+    [value]="activeCategory()" 
+    (ionChange)="onSelectCategory($event.detail.value)"
+    class="session-categories-segment">
+    @for (cat of stateService.activeConfig()?.selectedSections; track cat) {
+      <ion-segment-button [value]="cat" class="cat-seg-btn">
+        <ion-label>{{ cat | titlecase }}</ion-label>
+      </ion-segment-button>
+    }
+  </ion-segment>
+</ion-header>
+
+<ion-content class="session-content-viewport">
+  <div class="session-body-container">
+
+    <!-- Active Category Questions Lists -->
+    <ion-accordion-group [multiple]="true" [value]="expandedSections()" (ionChange)="onAccordionChange($event)">
+      @for (sec of stateService.activeQuestions()[activeCategory()]; track sec.id) {
+        <ion-accordion [value]="sec.id" class="exam-section-accordion">
+          <ion-item slot="header" class="exam-section-header">
+            <ion-label>Section {{ sec.id }}: {{ sec.title }}</ion-label>
+          </ion-item>
+          
+          <div class="section-container fade-in-panel" slot="content">
+            <!-- Reading Passage Panel -->
+            @if (sec.passage) {
+              <div class="reading-passage-panel">
+                <h3>Reading Text Passage</h3>
+                <p class="passage-text">{{ sec.passage }}</p>
+              </div>
+            }
+
+            <!-- Questions Loop -->
+            <div class="questions-list-wrapper">
+              @for (q of sec.questions; track q.id) {
+                
+                <!-- Standard MC / TF / Matching questions -->
+                @if (activeCategory() !== 'writing' && activeCategory() !== 'speaking') {
+                  <app-question-card 
+                    [question]="q" 
+                    [sectionId]="sec.id" 
+                    [category]="activeCategory()">
+                  </app-question-card>
+                }
+
+                <!-- Writing Prompt card -->
+                @if (activeCategory() === 'writing') {
+                  <div class="glass-question-card">
+                    <span class="q-badge">Writing Task</span>
+                    <p class="q-prompt">{{ q.prompt }}</p>
+
+                    <!-- Text Area Editor -->
+                    <div class="editor-container" [class.locked-editor]="stateService.submitted()">
+                      <ion-textarea
+                        rows="6"
+                        placeholder="Enter your essay or response here..."
+                        [value]="getUserAnswer('writing', sec.id, q.id)"
+                        (ionInput)="onWritingChange($event, sec.id, q.id)"
+                        [disabled]="stateService.submitted()"
+                        class="essay-editor-box">
+                      </ion-textarea>
+                      
+                      <div class="editor-footer">
+                        <span class="word-counter">
+                          Words: <strong>{{ getWordCount(getUserAnswer('writing', sec.id, q.id)) }}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Review explanations panel -->
+                    @if (stateService.submitted()) {
+                      <div class="explanations-review-card">
+                        <h4>Writing Guidelines</h4>
+                        <p>{{ q.explanation }}</p>
+                        
+                        <!-- Dynamic Native Translation -->
+                        @if (stateService.userLanguage() === 'tr' && q.localExplanations?.['tr']) {
+                          <div class="translated-explanation-box">
+                            <span class="lang-marker">TR</span>
+                            <p>{{ q.localExplanations['tr'] }}</p>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Speaking Prompt card -->
+                @if (activeCategory() === 'speaking') {
+                  <div class="glass-question-card">
+                    <span class="q-badge speaking-badge">Speaking Task</span>
+                    <p class="q-prompt">{{ q.prompt }}</p>
+
+                    <!-- Recording widget -->
+                    <div class="speaking-widget-container" [class.locked-widget]="stateService.submitted()">
+                      
+                      <!-- Active Recording State -->
+                      @if (isRecording() && activeRecordingId() === q.id) {
+                        <div class="live-recording-panel">
+                          <div class="waveform-animation-container">
+                            @for (bar of waveformBars(); track $index) {
+                              <div class="wave-bar" [style.height.px]="bar"></div>
+                            }
+                          </div>
+                          <span class="recording-duration">Simulating Recording: {{ formatTime(recordingSeconds()) }}</span>
+                          
+                          <div class="record-controls-row">
+                            <ion-button color="success" size="small" class="widget-action-btn" (click)="saveVoiceRecord(sec.id, q.id)">
+                              Save Record
+                            </ion-button>
+                            <ion-button color="danger" size="small" fill="clear" class="widget-action-btn" (click)="discardVoiceRecord()">
+                              Cancel
+                            </ion-button>
+                          </div>
+                        </div>
+                      } @else {
+                        <!-- Saved / Idle state -->
+                        <div class="idle-recording-panel">
+                          @if (getUserAnswer('speaking', sec.id, q.id)) {
+                            <div class="saved-audio-tag">
+                              <ion-icon name="checkmark-circle-outline" class="audio-saved-icon"></ion-icon>
+                              <span>Simulated voice recording saved ({{ getUserAnswer('speaking', sec.id, q.id) }})</span>
+                            </div>
+                          }
+                          
+                          @if (!stateService.submitted()) {
+                            <ion-button color="primary" fill="outline" class="mic-trigger-btn" (click)="startVoiceSimulator(q.id)">
+                              <ion-icon slot="start" name="mic-outline"></ion-icon>
+                              {{ getUserAnswer('speaking', sec.id, q.id) ? 'Record Response Again' : 'Tap to Record Voice Response' }}
+                            </ion-button>
+                          }
+                        </div>
+                      }
+
+                    </div>
+
+                    <!-- Review explanations panel -->
+                    @if (stateService.submitted()) {
+                      <div class="explanations-review-card">
+                        <h4>Speaking Tips & Vocabulary</h4>
+                        <p>{{ q.explanation }}</p>
+                        
+                        <!-- Dynamic Native Translation -->
+                        @if (stateService.userLanguage() === 'tr' && q.localExplanations?.['tr']) {
+                          <div class="translated-explanation-box">
+                            <span class="lang-marker">TR</span>
+                            <p>{{ q.localExplanations['tr'] }}</p>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+              }
+            </div>
+
+          </div>
+        </ion-accordion>
+      }
+    </ion-accordion-group>
+
+  </div>
+
+</ion-content>
+
+<!-- Polished Results Overlay Panel -->
+@if (stateService.showResultsScreen()) {
+  <div class="results-overlay-backdrop fade-in-panel">
+    <div class="results-container-card">
+      <div class="results-hero">
+        <div class="trophy-holder">
+          <ion-icon name="trophy-outline"></ion-icon>
+        </div>
+        <h2>Practice Finished!</h2>
+        <p>You have successfully submitted your custom assessments exam.</p>
+      </div>
+
+      <!-- Scores Widget -->
+      <div class="stats-circle-container">
+        <div class="progress-circle-widget">
+          <span class="val">{{ stateService.sessionStats().percentage }}%</span>
+          <span class="lbl">{{ stateService.sessionStats().correct }} / {{ stateService.sessionStats().total }} correct</span>
+        </div>
+      </div>
+
+      <!-- Interactive detail segments -->
+      <div class="results-stats-panel">
+        <h3>Exam Performance Breakdown</h3>
+        <div class="stat-breakdown-row">
+          <span class="stat-label">Total Time elapsed</span>
+          <span class="stat-val">{{ formatTime(stateService.elapsedSeconds()) }}</span>
+        </div>
+        <div class="stat-breakdown-row">
+          <span class="stat-label">Difficulty tier</span>
+          <span class="stat-val font-uppercase">{{ stateService.activeConfig()?.difficulty }}</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="results-actions-list">
+        <ion-button expand="block" color="primary" class="results-btn" (click)="onReviewAnswers()">
+          <ion-icon slot="start" name="analytics-outline"></ion-icon>
+          Review Mistakes & Explanations
+        </ion-button>
+        
+        <ion-button expand="block" fill="clear" color="medium" class="results-close-btn" (click)="onCloseExam()">
+          Return to Dashboard
+        </ion-button>
+      </div>
+    </div>
+  </div>
+}

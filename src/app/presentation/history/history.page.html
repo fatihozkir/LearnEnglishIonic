@@ -1,0 +1,75 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="history-toolbar">
+    <ion-title class="app-logo-title">
+      Practice<span>History</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="history-viewport">
+  <div class="history-container">
+    
+    <!-- Empty State -->
+    @if (stateService.examHistory().length === 0) {
+      <div class="empty-history-card fade-in-panel">
+        <div class="empty-icon-circle">
+          <ion-icon name="time-outline"></ion-icon>
+        </div>
+        <h3>No practice history yet</h3>
+        <p>Complete your first mock practice exam to start tracking your performance metrics, times, and answers here.</p>
+        
+        <ion-button color="primary" class="launch-exam-btn" (click)="onLaunchExam()">
+          Launch Configuration Tool
+        </ion-button>
+      </div>
+    } @else {
+      <!-- History List -->
+      <div class="history-list-wrapper fade-in-panel">
+        <ion-list lines="none" class="session-history-list">
+          @for (item of stateService.examHistory(); track item.id) {
+            <ion-item class="history-item-card" (click)="onSelectHistoryItem(item)">
+              <div class="card-body">
+                
+                <!-- Left Details -->
+                <div class="card-left">
+                  <div class="date-row">
+                    <ion-icon name="calendar-outline" class="item-meta-icon"></ion-icon>
+                    <span>{{ item.date | date:'mediumDate' }} • {{ item.date | date:'shortTime' }}</span>
+                  </div>
+                  
+                  <div class="mix-badges">
+                    @for (sec of item.sections; track sec) {
+                      <ion-badge color="light" class="category-pill-tag">
+                        {{ sec | titlecase }}
+                      </ion-badge>
+                    }
+                  </div>
+
+                  <div class="duration-row">
+                    <ion-icon name="time-outline" class="item-meta-icon"></ion-icon>
+                    <span>Duration: {{ formatDuration(item.durationSeconds) }}</span>
+                    <span class="difficulty-divider">•</span>
+                    <ion-badge color="secondary" class="diff-badge">{{ item.difficulty | uppercase }}</ion-badge>
+                  </div>
+                </div>
+
+                <!-- Right Score -->
+                <div class="card-right">
+                  <div class="score-circle">
+                    <span class="score-num">{{ item.percentage }}%</span>
+                    <span class="score-ratio">{{ item.score }}/{{ item.totalQuestions }}</span>
+                  </div>
+                  <ion-button fill="clear" color="medium" class="details-arrow-btn">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                  </ion-button>
+                </div>
+
+              </div>
+            </ion-item>
+          }
+        </ion-list>
+      </div>
+    }
+
+  </div>
+</ion-content>

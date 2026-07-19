@@ -1,0 +1,80 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="exams-toolbar">
+    <ion-title class="app-logo-title">
+      Exam<span>Configurator</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="exams-viewport">
+  <div class="configurator-container">
+    
+    <!-- Step 1: Difficulty Settings -->
+    <div class="config-card difficulty-card fade-in-panel">
+      <div class="config-header">
+        <ion-icon name="options-outline" class="header-icon"></ion-icon>
+        <div class="header-txt">
+          <h3>Difficulty Level</h3>
+          <p>Select the vocabulary complexity and reading passage length.</p>
+        </div>
+      </div>
+
+      <ion-segment [value]="difficulty()" (ionChange)="onDifficultyChange($event)" class="difficulty-segment">
+        <ion-segment-button value="easy">
+          <ion-label>Easy</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="medium">
+          <ion-label>Medium</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="hard">
+          <ion-label>Hard</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Step 2: Custom Mix Selection -->
+    <div class="config-card sections-card fade-in-panel">
+      <div class="config-header">
+        <ion-icon name="sparkles-outline" class="header-icon neon-purple"></ion-icon>
+        <div class="header-txt">
+          <h3>Practice Sections mix</h3>
+          <p>Tap to select any combination of multiple sections for a mixed practice exam.</p>
+        </div>
+      </div>
+
+      <div class="selection-grid">
+        @for (sec of sections(); track sec.id) {
+          <div 
+            class="config-pref-item" 
+            [class.selected]="sec.selected"
+            (click)="toggleSection(sec.id)">
+            <div class="neon-line" [class]="sec.colorClass"></div>
+            <div class="item-inner">
+              <div class="icon-circle" [class]="sec.colorClass">
+                <ion-icon [name]="sec.icon"></ion-icon>
+              </div>
+              <span class="label">{{ sec.name }}</span>
+              <div class="check-box-holder">
+                @if (sec.selected) {
+                  <ion-icon name="checkmark-circle-outline" class="green-check"></ion-icon>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Launch Button -->
+    <div class="action-card fade-in-panel">
+      <ion-button expand="block" color="success" class="start-exam-btn" (click)="onStartExam()">
+        <ion-icon slot="start" name="play-outline"></ion-icon>
+        Start Custom Practice Exam
+      </ion-button>
+      <p class="start-disclaimer">
+        Your progress and answers are auto-saved. The countdown timer runs in the background.
+      </p>
+    </div>
+
+  </div>
+</ion-content>

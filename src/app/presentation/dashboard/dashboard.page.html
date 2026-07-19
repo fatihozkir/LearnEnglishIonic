@@ -1,0 +1,115 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="dashboard-toolbar">
+    <ion-title class="app-logo-title">
+      ENGLISH<span>EXAM</span>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="dashboard-viewport">
+  <div class="dashboard-container">
+    
+    <!-- User Profile Hero Section -->
+    <div class="profile-hero-card fade-in-panel">
+      <div class="hero-left">
+        <img [src]="authService.currentUser()?.avatarUrl" alt="user avatar" class="hero-avatar">
+        <div class="hero-meta">
+          <div class="name-row">
+            <h2>{{ authService.currentUser()?.name }} {{ authService.currentUser()?.surname }}</h2>
+            @if (authService.currentUser()?.verified) {
+              <ion-icon name="checkmark-circle" class="verified-badge-icon" title="Verified Account"></ion-icon>
+            }
+          </div>
+          <p class="username-tag">&#64;{{ authService.currentUser()?.username }}</p>
+        </div>
+      </div>
+      <div class="hero-right">
+        <ion-badge color="primary" class="lang-badge">
+          Native: {{ authService.currentUser()?.nativeLanguage?.toUpperCase() }}
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- Quick Statistics Grid -->
+    <div class="stats-metric-grid fade-in-panel">
+      <!-- Avg Score Card -->
+      <div class="metric-card score-metric">
+        <div class="metric-icon-circle">
+          <ion-icon name="trophy-outline"></ion-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-val">{{ averageScore() }}%</span>
+          <span class="metric-lbl">Average Score</span>
+        </div>
+      </div>
+
+      <!-- Total Exams Card -->
+      <div class="metric-card exams-metric">
+        <div class="metric-icon-circle">
+          <ion-icon name="sparkles-outline"></ion-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-val">{{ completedExamsCount() }}</span>
+          <span class="metric-lbl">Exams Taken</span>
+        </div>
+      </div>
+
+      <!-- Glossary Count Card -->
+      <div class="metric-card words-metric">
+        <div class="metric-icon-circle">
+          <ion-icon name="book-outline"></ion-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-val">{{ stateService.glossaryCount() }}</span>
+          <span class="metric-lbl">Glossary Terms</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Banner -->
+    <div class="quick-action-banner fade-in-panel" (click)="onLaunchQuickExam()">
+      <div class="banner-left">
+        <h3>Ready to practice?</h3>
+        <p>Configure and launch a custom English test with custom sections and questions counts.</p>
+      </div>
+      <div class="banner-right">
+        <ion-button color="light" fill="solid" class="launch-arrow-btn">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Glossary List Section -->
+    <div class="dashboard-section glossary-section fade-in-panel">
+      <div class="section-header">
+        <h3>Glossary Study Deck</h3>
+        <ion-badge color="secondary">{{ stateService.glossaryCount() }} words</ion-badge>
+      </div>
+
+      @if (stateService.glossary().length === 0) {
+        <div class="empty-glossary-card">
+          <ion-icon name="book-outline" class="empty-icon"></ion-icon>
+          <h4>No saved terms yet</h4>
+          <p>Highlight vocabulary words in reading passages during exams to save them here for study reviews.</p>
+        </div>
+      } @else {
+        <ion-list lines="none" class="dashboard-glossary-list">
+          @for (item of stateService.glossary(); track item.word) {
+            <ion-item class="glossary-item-row">
+              <div class="word-card-content">
+                <span class="word-title">{{ item.word }}</span>
+                @if (item.context) {
+                  <span class="word-context-sentence">"{{ item.context }}"</span>
+                }
+              </div>
+              <ion-button slot="end" fill="clear" color="danger" class="row-delete-btn" (click)="onRemoveWord(item.word, $event)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    </div>
+
+  </div>
+</ion-content>

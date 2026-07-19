@@ -1,0 +1,255 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="payment-toolbar">
+    <ion-button slot="start" fill="clear" class="back-btn" (click)="onGoBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-button>
+    <ion-title class="payment-title">Upgrade Membership</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="payment-viewport scroll-content">
+  <div class="payment-container">
+    
+    <!-- Billing Cycle Toggle -->
+    <div class="billing-cycle-switch fade-in-panel">
+      <span [class.active-cycle]="!isYearly()">Monthly Billing</span>
+      <div class="toggle-bar" (click)="toggleBillingCycle()">
+        <div class="toggle-dot" [class.dot-right]="isYearly()"></div>
+      </div>
+      <span [class.active-cycle]="isYearly()">Yearly Billing <ion-badge color="success" class="save-badge">Save 30%</ion-badge></span>
+    </div>
+
+    <!-- Membership Packages Grid -->
+    <div class="plans-cards-grid fade-in-panel">
+      
+      <!-- Free Plan -->
+      <div 
+        class="plan-card free-card" 
+        [class.selected]="selectedPlan() === 'free'"
+        (click)="selectPlan('free')">
+        <div class="header">
+          <ion-icon name="star-outline" class="icon"></ion-icon>
+          <h3>Free assessment</h3>
+          <p>Basic practice tools</p>
+        </div>
+        <div class="price">
+          <h4>$0.00</h4>
+          <span>Forever free</span>
+        </div>
+      </div>
+
+      <!-- Pro Plan -->
+      <div 
+        class="plan-card pro-card" 
+        [class.selected]="selectedPlan() === 'pro'"
+        (click)="selectPlan('pro')">
+        <div class="recommended-ribbon">Recommended</div>
+        <div class="header">
+          <ion-icon name="ribbon-outline" class="icon gold-icon"></ion-icon>
+          <h3>Premium Pro</h3>
+          <p>Unlimited recordings & reviews</p>
+        </div>
+        <div class="price">
+          <h4>{{ isYearly() ? '$79.99' : '$9.99' }}</h4>
+          <span>{{ isYearly() ? '/year' : '/month' }}</span>
+        </div>
+      </div>
+
+      <!-- Ultimate Plan -->
+      <div 
+        class="plan-card ultimate-card" 
+        [class.selected]="selectedPlan() === 'ultimate'"
+        (click)="selectPlan('ultimate')">
+        <div class="header">
+          <ion-icon name="shield-checkmark-outline" class="icon purple-icon"></ion-icon>
+          <h3>Ultimate Mastery</h3>
+          <p>Simulated AI examiner feedback</p>
+        </div>
+        <div class="price">
+          <h4>{{ isYearly() ? '$149.99' : '$19.99' }}</h4>
+          <span>{{ isYearly() ? '/year' : '/month' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comparison Matrix Table -->
+    <div class="profile-card comparison-matrix-card fade-in-panel">
+      <h3>Plan Features Comparison</h3>
+      <table class="comparison-matrix">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Pro</th>
+            <th>Ultimate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Basic grammar & vocabulary</td>
+            <td>✓</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td>Unlimited speaking recordings</td>
+            <td>✗</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td>Bilingual explanations translation</td>
+            <td>✗</td>
+            <td>✓</td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td>AI speaking evaluations</td>
+            <td>✗</td>
+            <td>✗</td>
+            <td>✓</td>
+          </tr>
+          <tr>
+            <td>Priority support & custom tests</td>
+            <td>✗</td>
+            <td>✗</td>
+            <td>✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Gateway Simulation Controls -->
+    <div class="simulator-control-banner fade-in-panel">
+      <span class="label">🛠️ Mock Payment Outcome Simulator</span>
+      <p>Configure how the mock payment gateway will respond to transaction confirmations.</p>
+      
+      <div class="simulator-toggles">
+        <label class="toggle-choice">
+          <input type="radio" [value]="true" [ngModel]="forceSuccess()" (ngModelChange)="forceSuccess.set($event)" name="outcome">
+          <span>Force Successful Payment</span>
+        </label>
+        <label class="toggle-choice">
+          <input type="radio" [value]="false" [ngModel]="forceSuccess()" (ngModelChange)="forceSuccess.set($event)" name="outcome">
+          <span>Force Declined Transaction</span>
+        </label>
+      </div>
+    </div>
+
+    @if (selectedPlan() !== 'free') {
+      <!-- Order Summary Card -->
+      <div class="profile-card order-summary-card fade-in-panel">
+        <h3>Order Summary</h3>
+        <div class="summary-row">
+          <span>Plan Selection</span>
+          <strong>{{ getPlanName() }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Billing cycle</span>
+          <strong>{{ isYearly() ? 'Yearly' : 'Monthly' }}</strong>
+        </div>
+        <div class="summary-row total-row">
+          <span>Due Today</span>
+          <strong>{{ getPlanPrice() }}</strong>
+        </div>
+      </div>
+
+      <!-- Credit Card Input Checkout Form -->
+      <div class="profile-card billing-form-card fade-in-panel">
+        <h3>Payment Information</h3>
+        <div class="checkout-form">
+          <div class="field-item">
+            <label>Cardholder Name</label>
+            <ion-input type="text" placeholder="John Smith" [(ngModel)]="cardName" class="form-input"></ion-input>
+          </div>
+
+          <div class="field-item">
+            <label>Card Number</label>
+            <ion-input type="text" placeholder="4111 2222 3333 4444" maxlength="16" [(ngModel)]="cardNumber" class="form-input"></ion-input>
+          </div>
+
+          <div class="form-row-half">
+            <div class="field-item half">
+              <label>Expiration Date</label>
+              <ion-input type="text" placeholder="MM/YY" maxlength="5" [(ngModel)]="cardExpiry" class="form-input"></ion-input>
+            </div>
+            <div class="field-item half">
+              <label>CVV</label>
+              <ion-input type="text" placeholder="123" maxlength="3" [(ngModel)]="cardCvv" class="form-input"></ion-input>
+            </div>
+          </div>
+
+          <ion-button expand="block" color="success" class="confirm-pay-btn" [disabled]="!isFormValid() || isProcessing()" (click)="onConfirmPayment()">
+            @if (isProcessing()) {
+              Processing Transaction...
+            } @else {
+              Purchase and Activate Membership
+            }
+          </ion-button>
+        </div>
+      </div>
+    }
+
+    <!-- Invoices Billing History -->
+    <div class="profile-card billing-history-card fade-in-panel">
+      <h3>Billing History</h3>
+      @if (billingHistory().length === 0) {
+        <p class="empty-txt">No previous purchase records found.</p>
+      } @else {
+        <ion-list lines="none" class="invoice-list">
+          @for (rec of billingHistory(); track rec.date) {
+            <ion-item class="invoice-row-item">
+              <div class="inv-left">
+                <span class="inv-date">{{ rec.date | date:'mediumDate' }}</span>
+                <span class="inv-plan">{{ rec.plan }}</span>
+              </div>
+              <div class="inv-right" slot="end">
+                <span class="inv-price">{{ rec.amount }}</span>
+                @if (rec.status === 'paid') {
+                  <ion-badge color="success" class="inv-badge">PAID</ion-badge>
+                } @else {
+                  <ion-badge color="danger" class="inv-badge">DECLINED</ion-badge>
+                }
+              </div>
+            </ion-item>
+          }
+        </ion-list>
+      }
+    </div>
+
+    <!-- Restore trigger link -->
+    <div class="restore-purchases-block fade-in-panel">
+      <p>Purchased on another device? <a (click)="onRestorePurchases()">Restore Purchases</a></p>
+    </div>
+
+    <!-- Successful Gateway Overlay -->
+    @if (paymentStatus() === 'success') {
+      <div class="overlay-backdrop fade-in-panel">
+        <div class="outcome-card success-outcome">
+          <ion-icon name="checkmark-circle-outline" class="outcome-icon green-pulse"></ion-icon>
+          <h2>Upgrade Successful!</h2>
+          <p>You have unlocked all features under the <strong>{{ getPlanName() }}</strong>. Start practicing today!</p>
+          <ion-button expand="block" color="success" class="close-overlay-btn" (click)="onResetPaymentStatus()">
+            Excellent
+          </ion-button>
+        </div>
+      </div>
+    }
+
+    <!-- Failed Gateway Overlay -->
+    @if (paymentStatus() === 'failed') {
+      <div class="overlay-backdrop fade-in-panel">
+        <div class="outcome-card failed-outcome">
+          <ion-icon name="close-circle-outline" class="outcome-icon red-pulse"></ion-icon>
+          <h2>Transaction Failed</h2>
+          <p>The mock credit card payment was declined. (Declined code: Insufficient Funds).</p>
+          <ion-button expand="block" color="danger" class="close-overlay-btn" (click)="onResetPaymentStatus()">
+            Try Again
+          </ion-button>
+        </div>
+      </div>
+    }
+
+  </div>
+</ion-content>
