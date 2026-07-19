@@ -132,7 +132,9 @@ export class ExamSessionPage implements OnInit, OnDestroy {
   }
 
   onAccordionChange(event: any) {
-    this.expandedSections.set(event.detail.value || []);
+    if (event.target.tagName.toLowerCase() === 'ion-accordion-group') {
+      this.expandedSections.set(event.detail.value || []);
+    }
   }
 
   // --- Voice Recorder Simulator Action Helpers ---

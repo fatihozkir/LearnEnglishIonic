@@ -111,7 +111,9 @@ export class ExamReviewPage implements OnInit {
   }
 
   onAccordionChange(event: any) {
-    this.expandedSections.set(event.detail.value || []);
+    if (event.target.tagName.toLowerCase() === 'ion-accordion-group') {
+      this.expandedSections.set(event.detail.value || []);
+    }
   }
 
   formatDuration(seconds: number): string {
