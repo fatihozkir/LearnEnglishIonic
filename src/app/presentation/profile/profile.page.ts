@@ -19,6 +19,7 @@ import {
   IonSelectOption,
   IonSegment,
   IonSegmentButton,
+  IonModal,
 } from '@ionic/angular/standalone';
 import { AuthService } from '../auth/auth.service';
 import { addIcons } from 'ionicons';
@@ -72,6 +73,7 @@ interface PrefToggle {
     IonSelectOption,
     IonSegment,
     IonSegmentButton,
+    IonModal,
   ],
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
@@ -79,6 +81,9 @@ interface PrefToggle {
 export class ProfilePage {
   public authService = inject(AuthService);
   private router = inject(Router);
+
+  showAlertModal = signal<boolean>(false);
+  alertMessage = signal<string>('');
 
   // States
   isEditingUsername = signal<boolean>(false);
@@ -165,7 +170,8 @@ export class ProfilePage {
       // Save username changes
       const trimmed = this.editedUsername.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       if (trimmed.length < 4) {
-        alert('Username must be at least 4 alphanumeric characters.');
+        this.alertMessage.set('Username must be at least 4 alphanumeric characters.');
+        this.showAlertModal.set(true);
         return;
       }
 

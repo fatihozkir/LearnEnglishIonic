@@ -238,3 +238,37 @@
     </div>
   </div>
 }
+
+<!-- Custom Exit Confirmation Modal -->
+<ion-modal [isOpen]="showExitModal()" (didDismiss)="showExitModal.set(false)" class="custom-dialog-modal">
+  <ng-template>
+    <div class="custom-confirm-card">
+      <div class="icon-header warning-icon">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+      <h2>Pause Session?</h2>
+      <p>Are you sure you want to exit the exam session? Your current progress is saved, but the timer will pause.</p>
+      <div class="actions-row">
+        <ion-button color="light" fill="clear" (click)="showExitModal.set(false)">Cancel</ion-button>
+        <ion-button color="danger" fill="solid" (click)="confirmExit()">Exit Exam</ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<!-- Custom Submit Confirmation Modal -->
+<ion-modal [isOpen]="showSubmitModal()" (didDismiss)="showSubmitModal.set(false)" class="custom-dialog-modal">
+  <ng-template>
+    <div class="custom-confirm-card">
+      <div class="icon-header success-icon">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+      </div>
+      <h2>Submit Exam?</h2>
+      <p>Are you sure you want to finish and submit your exam? All answers will be graded immediately.</p>
+      <div class="actions-row">
+        <ion-button color="light" fill="clear" (click)="showSubmitModal.set(false)">Cancel</ion-button>
+        <ion-button color="primary" fill="solid" (click)="confirmSubmit()">Submit</ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>

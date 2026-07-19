@@ -15,6 +15,7 @@ import {
   IonList,
   IonItem,
   IonInput,
+  IonModal,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -53,6 +54,7 @@ interface BillingRecord {
     IonList,
     IonItem,
     IonInput,
+    IonModal,
   ],
   templateUrl: './payment.page.html',
   styleUrls: ['./payment.page.scss'],
@@ -62,6 +64,8 @@ export class PaymentPage implements OnInit {
 
   // States
   isYearly = signal<boolean>(false);
+  showAlertModal = signal<boolean>(false);
+  alertMessage = signal<string>('');
   selectedPlan = signal<'free' | 'pro' | 'ultimate'>('pro');
 
   // Checkout inputs
@@ -155,12 +159,14 @@ export class PaymentPage implements OnInit {
 
   onConfirmPayment() {
     if (this.selectedPlan() === 'free') {
-      alert('Free Plan requires no billing input.');
+      this.alertMessage.set('Free Plan requires no billing input.');
+      this.showAlertModal.set(true);
       return;
     }
 
     if (!this.isFormValid()) {
-      alert('Please enter valid credit card details.');
+      this.alertMessage.set('Please enter valid credit card details.');
+      this.showAlertModal.set(true);
       return;
     }
 

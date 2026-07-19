@@ -197,3 +197,100 @@ body.dark-theme {
     --background: #1E1B2E !important;
   }
 }
+
+/* Premium Custom Modal Dialog styling */
+ion-modal.custom-dialog-modal {
+  --width: 92%;
+  --max-width: 380px;
+  --height: auto;
+  --border-radius: 20px;
+  --box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  --background: var(--ion-color-step-50, #25233c);
+  --backdrop-opacity: 0.6;
+  
+  &::part(backdrop) {
+    background: #0f0e17;
+    backdrop-filter: blur(8px);
+  }
+
+  &::part(content) {
+    border: 1px solid var(--ion-color-step-200, #433e6b);
+    overflow: hidden;
+  }
+}
+
+.custom-confirm-card {
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: var(--ion-color-step-50, #25233c);
+  color: var(--ion-text-color, #FDF2F8);
+
+  .icon-header {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 4px;
+    animation: pulseIconKey 2s infinite ease-in-out;
+    
+    &.warning-icon {
+      background: rgba(255, 201, 60, 0.15);
+      color: var(--ion-color-warning, #FFC93C);
+    }
+    &.danger-icon {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--ion-color-danger, #EF4444);
+    }
+    &.success-icon {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--ion-color-success, #10B981);
+    }
+    &.info-icon {
+      background: rgba(79, 70, 229, 0.15);
+      color: var(--ion-color-primary, #4F46E5);
+    }
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--ion-text-color, #FDF2F8);
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ion-color-step-500, #a296df);
+    margin: 0 0 8px 0;
+  }
+
+  .actions-row {
+    display: flex;
+    width: 100%;
+    gap: 12px;
+    justify-content: center;
+
+    ion-button {
+      flex: 1;
+      height: 44px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin: 0;
+      --border-radius: 12px;
+    }
+  }
+}
+
+@keyframes pulseIconKey {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}

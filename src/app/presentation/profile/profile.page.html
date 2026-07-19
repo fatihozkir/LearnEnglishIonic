@@ -284,3 +284,19 @@
 
   </div>
 </ion-content>
+
+<!-- Custom Alert Dialog Modal -->
+<ion-modal [isOpen]="showAlertModal()" (didDismiss)="showAlertModal.set(false)" class="custom-dialog-modal">
+  <ng-template>
+    <div class="custom-confirm-card">
+      <div class="icon-header info-icon">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <h2>Profile Setting</h2>
+      <p>{{ alertMessage() }}</p>
+      <div class="actions-row">
+        <ion-button color="primary" fill="solid" (click)="showAlertModal.set(false)">OK</ion-button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>

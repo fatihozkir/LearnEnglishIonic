@@ -14,6 +14,7 @@ import {
   IonLabel,
   IonList,
   IonItem,
+  IonModal,
 } from '@ionic/angular/standalone';
 import { ExamStateService } from '../services/exam-state.service';
 import { addIcons } from 'ionicons';
@@ -55,6 +56,7 @@ interface SectionToggle {
     IonLabel,
     IonList,
     IonItem,
+    IonModal,
   ],
   templateUrl: './exams.page.html',
   styleUrls: ['./exams.page.scss'],
@@ -66,6 +68,8 @@ export class ExamsConfigPage {
 
   // States
   difficulty = signal<'easy' | 'medium' | 'hard'>('medium');
+  showAlertModal = signal<boolean>(false);
+  alertMessage = signal<string>('');
 
   sections = signal<SectionToggle[]>([
     { id: 'listening', name: 'Listening', icon: 'headset-outline', selected: true, colorClass: 'listening-card' },
@@ -106,7 +110,8 @@ export class ExamsConfigPage {
       .map(s => s.id);
 
     if (selectedIds.length === 0) {
-      alert('Please select at least one exam section to practice.');
+      this.alertMessage.set('Please select at least one exam section to practice.');
+      this.showAlertModal.set(true);
       return;
     }
 

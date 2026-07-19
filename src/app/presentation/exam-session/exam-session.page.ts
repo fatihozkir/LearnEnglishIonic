@@ -20,6 +20,7 @@ import {
   IonItem,
   IonAccordion,
   IonAccordionGroup,
+  IonModal,
 } from '@ionic/angular/standalone';
 import { ExamStateService } from '../services/exam-state.service';
 import { QuestionCardComponent } from '../components/question-card/question-card.component';
@@ -68,6 +69,7 @@ import { ExamCategory, ExamAnswers } from '../../core/models/models';
     IonItem,
     IonAccordion,
     IonAccordionGroup,
+    IonModal,
     QuestionCardComponent,
   ],
   templateUrl: './exam-session.page.html',
@@ -80,6 +82,8 @@ export class ExamSessionPage implements OnInit, OnDestroy {
   // States
   activeCategory = signal<ExamCategory>(ExamCategory.LISTENING);
   expandedSections = signal<string[]>([]);
+  showExitModal = signal<boolean>(false);
+  showSubmitModal = signal<boolean>(false);
 
   // Voice record simulator
   isRecording = signal<boolean>(false);
@@ -212,19 +216,25 @@ export class ExamSessionPage implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    if (confirm('Are you sure you want to finish and submit your exam?')) {
-      this.stateService.submitExam();
-    }
+    this.showSubmitModal.set(true);
+  }
+
+  confirmSubmit() {
+    this.showSubmitModal.set(false);
+    this.stateService.submitExam();
   }
 
   onCloseExam() {
     if (this.stateService.submitted()) {
       this.router.navigate(['/tabs/home']);
     } else {
-      if (confirm('Exit exam session? Your current progress is saved, but the timer will pause.')) {
-        this.router.navigate(['/tabs/home']);
-      }
+      this.showExitModal.set(true);
     }
+  }
+
+  confirmExit() {
+    this.showExitModal.set(false);
+    this.router.navigate(['/tabs/home']);
   }
 
   onReviewAnswers() {
