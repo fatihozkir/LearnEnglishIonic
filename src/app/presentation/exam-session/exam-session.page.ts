@@ -122,7 +122,11 @@ export class ExamSessionPage implements OnInit, OnDestroy {
       this.router.navigate(['/tabs/exams']);
       return;
     }
-    this.activeCategory.set(config.selectedSections[0] as ExamCategory);
+    if (config.selectedSections.includes(ExamCategory.LISTENING)) {
+      this.activeCategory.set(ExamCategory.LISTENING);
+    } else {
+      this.activeCategory.set(config.selectedSections[0] as ExamCategory);
+    }
     this.expandedSections.set(this.getSectionIds());
   }
 

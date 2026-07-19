@@ -36,10 +36,17 @@ ion-card.incorrect-card {
 
 .question-body {
   margin-bottom: 8px;
+  background: transparent !important;
 
   &.disabled-input {
     pointer-events: none;
     opacity: 0.85;
+  }
+
+  ion-list, ion-radio-group {
+    background: transparent !important;
+    --background: transparent !important;
+    padding: 0;
   }
 }
 
