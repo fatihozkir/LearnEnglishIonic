@@ -165,4 +165,8 @@ export class ExamReviewPage implements OnInit {
     }
     return String(correct) === String(option);
   }
+
+  getOptionLetter(index: number): string {
+    return String.fromCharCode(65 + index); // A, B, C, D...
+  }
 }

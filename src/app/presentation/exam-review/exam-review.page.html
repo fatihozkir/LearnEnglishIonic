@@ -83,19 +83,24 @@
                     <!-- Options list (MCQ / TF) -->
                     @if (q.options && q.options.length > 0 && activeCategory() !== 'writing' && activeCategory() !== 'speaking') {
                       <div class="options-container">
-                        @for (opt of q.options; track opt) {
+                        @for (opt of q.options; track opt; let i = $index) {
                           <div 
                             class="opt-item"
-                            [class.correct-option]="isOptionCorrect(q, opt)"
-                            [class.incorrect-selected]="isOptionSelected(activeCategory(), sec.id, q.id, opt) && !isOptionCorrect(q, opt)"
-                            [class.selected-indicator]="isOptionSelected(activeCategory(), sec.id, q.id, opt)">
+                            [class.correct-option]="isOptionCorrect(q, getOptionLetter(i))"
+                            [class.incorrect-selected]="isOptionSelected(activeCategory(), sec.id, q.id, getOptionLetter(i)) && !isOptionCorrect(q, getOptionLetter(i))"
+                            [class.selected-indicator]="isOptionSelected(activeCategory(), sec.id, q.id, getOptionLetter(i))">
                             
                             <div class="opt-label-block">
                               <span class="indicator-marker">
-                                @if (isOptionCorrect(q, opt)) { ✓ }
-                                @else if (isOptionSelected(activeCategory(), sec.id, q.id, opt)) { ✗ }
+                                @if (isOptionCorrect(q, getOptionLetter(i))) { ✓ }
+                                @else if (isOptionSelected(activeCategory(), sec.id, q.id, getOptionLetter(i))) { ✗ }
                               </span>
-                              <span class="text">{{ opt }}</span>
+                              <span class="text">
+                                @if (q.type !== 'true_false') {
+                                  <span class="option-letter" style="font-weight: 700; margin-right: 4px; color: var(--ion-color-step-600, #475569);">{{ getOptionLetter(i) }}.</span>
+                                }
+                                {{ opt }}
+                              </span>
                             </div>
                           </div>
                         }

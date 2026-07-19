@@ -351,14 +351,6 @@ export class ExamStateService {
           let qs: Question[] = sec.questions || [];
           // Shuffle questions
           qs = this.shuffleArray(qs);
-          
-          // Shuffle options
-          qs = qs.map((q: Question) => {
-            if (q.options && q.options.length > 0 && q.type !== 'matching') {
-              q.options = this.shuffleArray(q.options);
-            }
-            return q;
-          });
 
           const limit = config.questionCounts[cat] || 10;
           sec.questions = qs.slice(0, limit);
